@@ -388,7 +388,6 @@ def filterig():
 
         start,end = "a","a"
         #mapping.map_seismisitas_mingguan(start,end)
-        #print('ini histogram = #######',hist_tab)
 
         today = datetime.today()
         day30ago = today - timedelta(days=30)
