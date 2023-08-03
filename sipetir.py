@@ -331,6 +331,7 @@ def proc_sumharian():
             longmax = request.form['longmax']
             time1 = request.form['date1']
             time2 = request.form['date2']
+            utc = request.form['utc']
             filedb = request.files.getlist("file")
             fileout = request.form['fileout']
 
@@ -351,9 +352,12 @@ def proc_sumharian():
             # fdat = 'fungsi/dataproc_sumharian.dat'
             readdb3(databases,fdat,batas)
 
+            fout = 'fungsi/'+fileout+'utc.dat'
+            samutc2loc(fdat,utc,fout)
+
             dir = 'fungsi/export/'
             fpath = dir+fileout+'.csv'
-            exp_sumharian(fdat,start,end,fpath)
+            exp_sumharian(fout,start,end,fpath)
 
             print(databases)
             # path = 'fungsi/export/Statistik Petir Mingguan Periode 2023-07-10 sd 2023-07-16.csv'
@@ -478,55 +482,6 @@ def filtered_ig():
     except:
         return redirect(url_for('filterig'))
 
-# @app.route('/database')
-# def database():
-#     if 'user' in session:
-#         cur = mysql.connection.cursor()
-#         cur.execute("SELECT * FROM db_gempa ORDER BY 2 DESC, 3 DESC LIMIT 0, 50")
-#         parameter = cur.fetchall()
-#         cur.close()
-#         today = datetime.today()
-#         day30ago = today - timedelta(days=30)
-#         today = today.strftime('%d-%m-%Y %H:%M')
-#         day30ago = day30ago.strftime('%d-%m-%Y %H:%M')
-#         depth1 = 0
-#         depth2 = 1000
-#         mag1 = 1.0
-#         mag2 = 9.0
-#         lat1 = 3.50
-#         lat2 = -2.75
-#         long1 = 124.00
-#         long2 = 130.00
-#         return render_template('database.html',data=parameter, date = [day30ago,today,depth1,depth2,mag1,mag2,lat1,lat2,long1,long2])
-#     else:
-#         flash("Please, Login First !!")
-#         return redirect(url_for('login'))
-
-# @app.route('/database/sorted', methods=["POST","GET"])
-# def filter_tabel():
-#     try:
-#         if request.method == 'POST':
-#             date1 = request.form['date1']
-#             date2 = request.form['date2']
-#             depth1 = request.form['depth1']
-#             depth2 = request.form['depth2']
-#             mag1 = request.form['mag1']
-#             mag2 = request.form['mag2']
-#             lat1 = request.form['lat1']
-#             lat2 = request.form['lat2']
-#             long1 = request.form['long1']
-#             long2 = request.form['long2']
-#             filter = f.filter_parameter(date1,date2,depth1,depth2,mag1,mag2,lat1,lat2,long1,long2)
-#             return render_template('database.html',data=filter, date = [date1,date2,depth1,depth2,mag1,mag2,lat1,lat2,long1,long2])
-#         else:
-#             today = datetime.today()
-#             filter = f.filter_parameter()
-#             today = today.strftime('%d-%m-%Y %H:%M')
-            
-#             return render_template('database.html',data=filter, date = [today,today])
-#     except:
-#         return redirect(url_for('database'))
-
     
 
 @app.route('/export/<string:tipe>', methods=["GET"])
@@ -548,29 +503,30 @@ def exp(tipe):
             lhari = last_month.day
             end = datetime(thn,bulan,lhari)
             start = datetime(thn,bulan,1)
-            date_list = [end - timedelta(days=x) for x in range(lhari)]
-            date_list.sort()
+            # date_list = [end - timedelta(days=x) for x in range(lhari)]
+            # date_list.sort()
             fpath = 'fungsi/export/Statistik Gempa Bulanan '
-            chart = ig.infografis(start,end)
+            # chart = ig.infografis(start,end)
         elif type == 'customig':
             tgl = tipe.split('!')[1]
             start = tgl.split('@')[0]
             end = tgl.split('@')[1]
             start = datetime.strptime(start, '%d-%B-%Y').date()
             end = datetime.strptime(end, '%d-%B-%Y').date()
-            hari = (end - start).days+1
-            date_list = [end - timedelta(days=x) for x in range(hari)]
-            date_list.sort()
+            # hari = (end - start).days+1
+            # date_list = [end - timedelta(days=x) for x in range(hari)]
+            # date_list.sort()
             fpath = 'fungsi/export/Statistik Gempa Periode '
-            chart = ig.infografis(start,end)
+            # chart = ig.infografis(start,end)
         
 
         dt0 = start.strftime('%Y-%m-%d')
         dt1 = end.strftime('%Y-%m-%d')
         path = fpath+dt0+' sd '+dt1+'.csv'
             
-        
-        export(datasam,start,end,fpath=path)
+        fout = 'fungsi/gmt/sambaranutc.dat'
+        samutc2loc(datasam,'9',fout)
+        export(fout,start,end,fpath=path)
         
         return send_file(path, as_attachment=True)
         

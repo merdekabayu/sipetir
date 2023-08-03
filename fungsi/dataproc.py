@@ -170,6 +170,20 @@ def fromdbsta(dt_0,dt_1):
 
     return databases
 
+def samutc2loc(datasam,utc,fout):
+    fo = open(fout, 'w')
+    f = open(datasam, 'r')
+    baris = f.readlines()
+    for i in range(len(baris)):
+        baris[i] = baris[i].split()
+        dt = baris[i][2]+' '+baris[i][3][:2]+':'+baris[i][3][3:5]+':'+baris[i][3][6:8]
+        dtime = datetime.strptime(dt,'%Y-%m-%d %H:%M:%S')
+        dtloc = dtime + timedelta(hours=float(utc))
+        dtlocal = dtloc.strftime('%Y-%m-%d\t%H:%M:%S')
+        fo.write(baris[i][0]+'\t'+baris[i][1]+'\t'+dtlocal+'\t'+baris[i][4]+ '\n')
+    fo.close()
+
+
 def readdb3(databases,fileout,batas):
     f = open(fileout, 'w')
     xmin,xmax = batas[0],batas[1]

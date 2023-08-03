@@ -82,7 +82,9 @@ def infografis(start,end):
     total = [len(sam),len(samcgp),len(samcgm),len(samic)]
 
     # export(datasam,start,end)
-    datachart = chartpetir(datasam,start,end)
+    fout = 'fungsi/gmt/sambaranutc.dat'
+    samutc2loc(datasam,'9',fout)
+    datachart = chartpetir(fout,start,end)
 
 
     yest = end
