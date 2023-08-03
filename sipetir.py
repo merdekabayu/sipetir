@@ -63,6 +63,11 @@ def login():
                 flash("Wrong Password !!")
                 return render_template("loginpage.html")
                 #return redirect(url_for('login'))
+        elif usr == "bmkg": 
+            pwd = '$2b$12$H6wqyGBFkBaZOuMVVwwk4Oy.OFqhPswKK3zlbra5VcDXhYH7VhymO'
+            if bcrypt.hashpw(password, pwd.encode('utf-8')) == pwd.encode('utf-8'):
+                session['user_dataproc'] = usr
+                return redirect(url_for('data_proc'))
         else :
             flash("User Not Found !!")
             return render_template("loginpage.html")
@@ -233,7 +238,7 @@ def filter_tabel():
 
 @app.route('/data-processing')
 def data_proc():
-    if 'user' in session:
+    if 'user' in session or 'user_dataproc' in session:
         
         
         cust = [0.777, 127.3667]
@@ -245,7 +250,7 @@ def data_proc():
     
 @app.route('/data-processing/nex2db', methods=["POST"])
 def proc_nex2db():
-    if 'user' in session:
+    if 'user' in session or 'user_dataproc' in session:
         if request.method == 'POST':
             lat = request.form['lat']
             long = request.form['long']
@@ -282,7 +287,7 @@ def proc_nex2db():
     
 @app.route('/data-processing/gridding', methods=["POST"])
 def proc_gridding():
-    if 'user' in session:
+    if 'user' in session or 'user_dataproc' in session:
         if request.method == 'POST':
             latmin = request.form['latmin']
             longmin = request.form['longmin']
@@ -323,7 +328,7 @@ def proc_gridding():
 
 @app.route('/data-processing/sumharian', methods=["POST","GET"])
 def proc_sumharian():
-    if 'user' in session:
+    if 'user' in session or 'user_dataproc' in session:
         if request.method == 'POST':
             latmin = request.form['latmin']
             longmin = request.form['longmin']
