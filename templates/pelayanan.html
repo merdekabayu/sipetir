@@ -245,40 +245,36 @@
   
 
   
-  var imageUrl = '{{ url_for('static', filename='mappetir/sambarancg-densityclip.png') }}';
+  // var imageUrl = '{{ url_for('static', filename='mappetir/sambarancg-densityclip.png') }}';
   var altText = 'Image ';
   var latLngBounds = L.latLngBounds([[1.22, 128.1], [0.37, 126.4]]);
-  var imageOverlay1cg = L.imageOverlay(imageUrl, latLngBounds, {
-    alt: altText,
-    interactive: true
-    });
 
   
   
   
-  var shelterMarkers = L.featureGroup();
+  // var shelterMarkers = L.featureGroup();
+  var layerGroupcgp = L.layerGroup();
+  var layerGroupcgm = L.layerGroup();
+  var layerGroupic = L.layerGroup();
   {% for eq in sambaran %}
   
   var lat = {{eq.0}}
   var long = {{eq.1}}
-  var tipe = {{eq.4}}
 
   {% if eq.4 == '0' %}
-  var tipe = {{eq.4}}
   var popup = L.popup().setContent("<b>Waktu Kejadian:</b><br>{{eq.2}} LT<br><b>Tipe Sambaran:</b><br>CG+<br><b>Jarak dg Lokasi Anda:</b><br>{{eq.3}} Km");
-  var shelter = L.marker([lat,long], {icon: icon_cgp}).bindPopup(popup).openPopup();
+  // var shelter = L.marker([lat,long], {icon: icon_cgp}).bindPopup(popup).openPopup();
+  var shelter = L.marker([lat,long], {icon: icon_cgp}).bindPopup(popup).openPopup().addTo(layerGroupcgp);
   {% elif eq.4 == '1' %}
-  var tipe = {{eq.4}}
   var popup = L.popup().setContent("<b>Waktu Kejadian:</b><br>{{eq.2}} LT<br><b>Tipe Sambaran:</b><br>CG-<br><b>Jarak dg Lokasi Anda:</b><br>{{eq.3}} Km");
-  var shelter = L.marker([lat,long], {icon: icon_cgm}).bindPopup(popup).openPopup();
+  var shelter = L.marker([lat,long], {icon: icon_cgm}).bindPopup(popup).openPopup().addTo(layerGroupcgm);
   {% else %}
-  var tipe = {{eq.4}} //ini else
   var popup = L.popup().setContent("<b>Waktu Kejadian:</b><br>{{eq.2}} LT<br><b>Tipe Sambaran:</b><br>IC<br><b>Jarak dg Lokasi Anda:</b><br>{{eq.3}} Km");
-  var shelter = L.marker([lat,long], {icon: icon_ic}).bindPopup(popup).openPopup();
+  var shelter = L.marker([lat,long], {icon: icon_ic}).bindPopup(popup).openPopup().addTo(layerGroupic);
   {% endif %}
 
-  var currentShelter = window['shelter'];
-  currentShelter.addTo(shelterMarkers);
+  // var currentShelter = window['shelter'];
+  // currentShelter.addTo(shelterMarkers);
   {% endfor %}
 
   
@@ -290,8 +286,9 @@
     "Google Satelite": googleSat
   };
   var overlayMaps = {
-    "Kerapatan CG (Landonly)": imageOverlay1cg,
-    "Sambaran": shelterMarkers
+    "CG Positive": layerGroupcgp,
+    "CG Negative": layerGroupcgm,
+    "IC": layerGroupic
     
   };
 
@@ -302,7 +299,7 @@
       zoom: 10,
       minZoom: 10,
       zoomControl: false,
-      layers: [googleSat,shelterMarkers]
+      layers: [googleSat,layerGroupcgp,layerGroupcgm]
   });
 
   
