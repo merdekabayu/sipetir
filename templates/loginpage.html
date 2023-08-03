@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SI-GEMPA | Login</title>
+  <title>SI-PETIR | Login</title>
 
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo-only.png') }}">
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo-sipetir.png') }}">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   
@@ -25,13 +25,12 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-        <a href="../../index2.html" class="h3">
-            <img src="{{ url_for('static', filename='images/logo-only.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="width: 20%;">
-        </a>
+      <img src="{{ url_for('static', filename='images/logo-sipetir.png') }}" alt="SI-PETIR Logo" class="brand-image elevation-10" style="width: 30%;">
+      
     </div>
     <div class="card-body">
       
-      <h5 class="login-box-msg"><b>SI-GEMPA V2.0</b> </h5>
+      <h5 class="login-box-msg"><b>SI-PETIR V2.0</b> </h5>
       
       {%for category, message in get_flashed_messages(with_categories=True)%}
       
@@ -79,7 +78,7 @@
     <!-- /.card-body -->
     <div class="card-footer text-right bg-success mt-0 mb-0 pt-1 pb-0 pr-2">
       <p style="margin-bottom: 8px; margin-right: 0px;" class="text-white-50">
-        <b>SI-GEMPA</b> V2.0 | Copyright &copy; 2023
+        <b>SI-PETIR</b> V2.0 | Copyright &copy; 2023
       </p>
 
       

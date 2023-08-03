@@ -161,7 +161,7 @@
                       <span class="info-box-text"><h5>Download<br>CSV</h5></span>
                       
                     </div>
-                    <a href="/export/mingguan" type="submit" class="btn btn-navbar info-box-icon bg-warning elevation-1 ml-2"><i class="fas fa-file-download"></i>
+                    <a href="/export/bulanan" type="submit" class="btn btn-navbar info-box-icon bg-warning elevation-1 ml-2"><i class="fas fa-file-download"></i>
                     </a>
                   </div>
                   <!-- /.info-box -->
@@ -605,28 +605,27 @@
 
   
   
-  
-  var shelterMarkers = L.featureGroup();
+  // var shelterMarkers = L.featureGroup();
+  var layerGroup1 = L.layerGroup();
+  var layerGroupcg = L.layerGroup();
   {% for eq in sam %}
   
-  var lat = {{eq.1}}
-  var long = {{eq.0}}
-  var tipe = {{eq.2}}
+  var lat = {{eq.1}};
+  var long = {{eq.0}};
   // var shelter = L.marker([lat,long], {icon: icon_cgp});
   {% if eq.2 == 0.0 %}
-  var tipe = {{eq.2}}
-  var shelter = L.marker([lat,long], {icon: icon_cgp});
-  {% elif eq.2 == 1.0 %}
-  var tipe = {{eq.2}}
-  var shelter = L.marker([lat,long], {icon: icon_cgm});
-  {% else %}
-  var lat = {{eq.1}}
-  var long = {{eq.0}}
-  // var tipe = {{eq.2}} ini else
-  var shelter = L.marker([lat,long], {icon: icon_ic});
+  var shelters = L.marker([lat,long], {icon: icon_cgp}).addTo(layerGroupcg);
   {% endif %}
-  var currentShelter = window['shelter'];
-  currentShelter.addTo(shelterMarkers);
+  {% if eq.2 == 1.0 %}
+  var shelters = L.marker([lat,long], {icon: icon_cgm}).addTo(layerGroupcg);
+  {% endif %}
+  {% if eq.2 == 2.0 %}
+  var shelters = L.marker([lat,long], {icon: icon_ic}).addTo(layerGroup1);
+  {% endif %}
+  
+
+  // var currentShelter = window['shelter'];
+  // currentShelter.addTo(shelterMarkers);
   {% endfor %}
 
   
@@ -640,7 +639,8 @@
     "Kerapatan CG (Landonly)": imageOverlay1cg,
     "Kerapatan": imageOverlay,
     "Kerapatan (Landonly)": imageOverlay1,
-    "Sambaran": shelterMarkers
+    "Sambaran CG": layerGroupcg,
+    "Sambaran IC": layerGroup1
     
   };
 
