@@ -1,0 +1,452 @@
+{% extends 'base.html' %}
+{% block judul %}V2.0{% endblock %}
+{% block mainpage_css %} 
+  <!-- SweetAlert2 -->
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}"> -->
+  <!-- Toastr -->
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}"> -->
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/adminlte.min.css') }}">
+  
+  <style>
+    #map {
+            position: relative;
+            border: 1px solid black;
+            border-radius: 8px;
+            height: 600px;  /* or as desired */
+            width: 100%;  /* This means "100% of the width of its container", the .col-md-8 */
+          }
+    
+  </style>
+
+  <!-- PETIR REALTIME -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='libpetir/css/leaflet.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='libpetir/css/MarkerCluster.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='libpetir/css/custom.css') }}" type="text/css">
+  
+  <!-- <script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/08563539-773F-EA44-9F8E-C3D0162FD305/main.js" charset="UTF-8"></script> -->
+  <script type="text/javascript">function showLocalTime(a,b,c,d){if(document.getElementById&&document.getElementById(a)){this.container=document.getElementById(a),this.displayversion=d;var e="server-php"==b?'<? print date("F d, Y H:i:s", time())?>':"server-ssi"==b?'<!--#config timefmt="%B %d, %Y %H:%M:%S"--><!--#echo var="DATE_LOCAL" -->':"8/15/2018 1:56:39 PM";this.localtime=this.serverdate=new Date(e),this.localtime.setTime(this.serverdate.getTime()+60*c*1e3),this.updateTime(),this.updateContainer()}}function formatField(a,b){if("undefined"!=typeof b){var c=a>12?a-12:a;return 0==c?12:c}return a<=9?"0"+a:a}var minggutxt=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],weekdaystxt=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],bulantxt=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],monthstxt=["January","February","March","April","May","June","July","August","September","October","November","December"];showLocalTime.prototype.updateTime=function(){var a=this;this.localtime.setSeconds(this.localtime.getSeconds()+1),setTimeout(function(){a.updateTime()},1e3)},showLocalTime.prototype.updateContainer=function(){var a=this;if("long"==this.displayversion)this.container.innerHTML=this.localtime.toLocaleString();else{var b=this.localtime.getHours(),c=this.localtime.getMinutes(),d=this.localtime.getSeconds(),k=(this.localtime.getDate(),this.localtime.getUTCDate(),minggutxt[this.localtime.getDay()],bulantxt[this.localtime.getMonth()],weekdaystxt[this.localtime.getUTCDay()],monthstxt[this.localtime.getUTCMonth()],b+1);k>=24&&(k-=24);var l=b+2;l>=24&&(l-=24);var m=b-7;m<0&&(m+=24);this.container.innerHTML="<span class='hari-digit hidden-sm'><a href='http://jam.bmkg.go.id/' target='_blank'>Standar Waktu Indonesia</a> </span><span class='FontDigit'>"+formatField(b)+":"+formatField(c)+":"+formatField(d)+" WIB / </span><span class='FontDigit'>"+formatField(m)+":"+formatField(c)+":"+formatField(d)+" UTC</span>"}setTimeout(function(){a.updateContainer()},1e3)};
+	</script>
+	<script type="text/javascript">
+		if(window.top!==window.self || top != self){ window.top.location=window.self.location;top.location.replace(location);}
+	</script>
+
+  <style>
+    div.gallery {
+        margin: 5px;   
+        float: left;
+        width: 80px;
+    }
+    div.gallery img {
+        width: 100%;
+        height: auto;
+    }
+    
+    div.desc {
+        padding: 15px;
+        text-align: center;
+    }
+  </style>
+
+{% endblock %}
+{% block subjudul %} SI-PETIR V2.0 {% endblock %}
+{% block mainnav_add %} active {% endblock %}
+
+{% block content %} 
+  
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-left">
+            <li class="breadcrumb-item"><a href="/">SI-PETIR</a></li>
+            <li class="breadcrumb-item active">Monitoring</li>
+            
+          </ol>
+        </div>
+        <div class="col-sm-6">
+          
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Monitoring Petir Maluku Utara (Realtime)</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="actions">
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 ">
+                    <div class="row">
+                      <div tabindex="0" class="leaflet-container leaflet-fade-anim" id="map" style="center: 0px; top:0px; width: 100%; height: 500px; position: relative; background-color: white; background-repeat: no-repeat; background-attachment: fixed;">
+                        <canvas id="pnlClockCanvas" width="220" height="30" style="z-index: 2; position:relative; left:0px; top:5px; background-repeat: no-repeat; background-attachment: fixed;">
+                                  
+                          Your browser does not support HTML5 Canvas.
+                        </canvas>
+                        <canvas id="pnlCanvas" width="245" height="330" style="z-index: 2; position:relative; left:0px; top:5px; background-repeat: no-repeat; background-attachment: fixed;">
+                                  
+                          Your browser does not support HTML5 Canvas.
+                        </canvas>
+          
+                        <canvas id="pnlSymCanvas" width="245" height="65" style="z-index: 2; position:relative; left:0px; top:340px; background-repeat: no-repeat; background-attachment: fixed;">
+                        
+                          Your browser does not support HTML5 Canvas.
+                        </canvas>
+                        <script>L_PREFER_CANVAS = true;</script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/leaflet_073mod.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/leaflet.markercluster.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/Leaflet.Geodesic.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/extentsions.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/preLoad.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/symbols.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/Counter.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/Util.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/ClockPanel.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/DataPanel.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/LegendPanel.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/LegendPanelNC.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/options/mapProviders.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/main.js') }}"></script>
+                    
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div style="float: center; font-size: 17px;">
+                        <b> Sumber:  Stasiun Geofisika Ternate </b>   
+                        <br>
+              
+                        <p style="float: left;"><b>Keterangan :</b><p> <br>
+                          <li style="float: left;">Lingkaran warna orange merupakan radius dari posisi sensor dalam satuan km</li> <br>
+                          <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/cgn001_0.png') }}" > Petir Jenis CG (Cloud to Ground) negatif </li> <br>
+                          <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/cgp002_0.png') }}" > Petir Jenis CG (Cloud to Ground) positif </li> <br>
+                          <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/icf003_0.png') }}" > Petir Jenis IC (Intra/Inter Cloud) </li>
+                      <br>
+                      </div>
+                    </div>
+                    <!-- <div id="map1"></div>
+                      <div class="row" data-aos="zoom-in">
+                              <div class="map1 container-fluid mb-4" style="margin-bottom: 100px;" id="map1" data-aos="fade-up">
+                              </div>
+                          </div>
+                  </div> -->
+                </div>
+                
+              </div>
+            </div>
+            
+            <!-- /.card-body -->
+          </div>
+          <!-- Default box -->
+          
+          <!-- /.card -->
+          
+
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">50 Gempabumi Terakhir</h3>
+              <div class="btn-group float-right ">
+                <a href="/index/tabelgempa" class="btn btn-warning start" role="button" aria-pressed="true"> 
+                  <i class="fas fa-edit"></i> Edit Parameter
+                </a>
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              
+
+              <div class="row">
+                <div style="float: center; font-size: 17px;">
+                  <b> Sumber:  Stasiun Geofisika Ternate </b>   
+                  <br>
+        
+                  <p style="float: left;"><b>Keterangan :</b><p> <br>
+                    <li style="float: left;">Lingkaran warna orange merupakan radius dari posisi sensor dalam satuan km</li> <br>
+                    <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/cgn001_0.png') }}" > Petir Jenis CG (Cloud to Ground) negatif </li> <br>
+                    <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/cgp002_0.png') }}" > Petir Jenis CG (Cloud to Ground) positif </li> <br>
+                    <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/icf003_0.png') }}" > Petir Jenis IC (Intra/Inter Cloud) </li>
+                <br>
+                </div>
+              </div>
+              
+            </div>
+            <!-- /.card-body -->
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">50 Gempabumi Terakhir</h3>
+              <div class="btn-group float-right ">
+                <a href="/index/tabelgempa" class="btn btn-warning start" role="button" aria-pressed="true"> 
+                  <i class="fas fa-edit"></i> Edit Parameter
+                </a>
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table id="tabelmainpage" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <!-- /.<th style="width: 10px;">No</th>-->
+                  <th style="width: 100px;">Tanggal (UTC)</th>
+                  <th style="width: 100px;">Jam (UTC)</th>
+                  <th style="width: 100px;">Lintang</th>
+                  <th style="width: 100px;">Bujur</th>
+                  <th style="width: 100px;">Kedalaman</th>
+                  <th style="width: 100px;">Magnitudo</th>
+                  <th style="width: 350px;">Keterangan</th>
+                  <th>Informasi</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for par in data %}
+                  <tr>
+                    <!-- /.<td>1</td>-->
+                    <td>{{par.1}}</td>
+                    <td>{{par.2}}</td>
+                    <td>{{par.3}}</td>
+                    <td>{{par.4}}</td>
+                    <td>{{par.5}}</td>
+                    <td>{{par.6}}</td>
+                    <td>{{par.7}}</td>
+                    <td>{{par.8}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+
+{% block mapseismisitas %} 
+
+<!-- <script>
+  var map1 = L.map('map1').setView([{{ koord[0] }},{{ koord[1] }}], 7);
+  var icon_epic_last = L.icon({iconUrl: '{{ url_for('static', filename='gempa.png') }}', iconSize: [40,40]});
+  var icon_epic = L.icon({iconUrl: 'http://inatews.bmkg.go.id/generate_peta/images/new/circle-red-10.png', iconSize: [15,15]});
+  var marker = L.marker([{{ koord[0] }},{{ koord[1] }}], {icon: icon_epic_last}).addTo(map1).bindPopup("<p><b>{% print(infogb[0]) %}</b></p>");
+  marker.on('mouseover',function(ev) {
+    marker.openPopup();});
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_map/mapServer/tile/{z}/{y}/{x}', {
+      attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  }).addTo(map1);
+
+</script> -->
+
+{% endblock %}
+
+
+
+
+{% block scriptmainpage %} 
+
+
+
+
+<script src="{{ url_for('static', filename='plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.min.js') }}"></script>
+
+<script>
+  $(document).ready(function() {
+      window.setTimeout(function() {
+          $(".alert").fadeTo(1000, 0).slideUp(7000, function(){
+              $(this).remove();
+          });
+      }, 7000);
+  });    
+</script>
+
+
+
+
+<script>
+  $(function() {
+    var Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+
+    $('.swalDefaultSuccess').click(function() {
+      Toast.fire({
+        icon: 'success',
+        title: 'Parameter berhasil di-copy !!'
+      })
+    });
+    $('.swalDefaultInfo').click(function() {
+      Toast.fire({
+        icon: 'info',
+        title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.swalDefaultError').click(function() {
+      Toast.fire({
+        icon: 'error',
+        title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.swalDefaultWarning').click(function() {
+      Toast.fire({
+        icon: 'warning',
+        title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.swalDefaultQuestion').click(function() {
+      Toast.fire({
+        icon: 'question',
+        title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+
+    $('.toastrDefaultSuccess').click(function() {
+      toastr.success('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
+    });
+    $('.toastrDefaultInfo').click(function() {
+      toastr.info('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
+    });
+    $('.toastrDefaultError').click(function() {
+      toastr.error('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
+    });
+    $('.toastrDefaultWarning').click(function() {
+      toastr.warning('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
+    });
+
+    $('.toastsDefaultDefault').click(function() {
+      $(document).Toasts('create', {
+        title: 'Toast Title',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultTopLeft').click(function() {
+      $(document).Toasts('create', {
+        title: 'Toast Title',
+        position: 'topLeft',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultBottomRight').click(function() {
+      $(document).Toasts('create', {
+        title: 'Toast Title',
+        position: 'bottomRight',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultBottomLeft').click(function() {
+      $(document).Toasts('create', {
+        title: 'Toast Title',
+        position: 'bottomLeft',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultAutohide').click(function() {
+      $(document).Toasts('create', {
+        title: 'Toast Title',
+        autohide: true,
+        delay: 750,
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultNotFixed').click(function() {
+      $(document).Toasts('create', {
+        title: 'Toast Title',
+        fixed: false,
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultFull').click(function() {
+      $(document).Toasts('create', {
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.',
+        title: 'Toast Title',
+        subtitle: 'Subtitle',
+        icon: 'fas fa-envelope fa-lg',
+      })
+    });
+    $('.toastsDefaultFullImage').click(function() {
+      $(document).Toasts('create', {
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.',
+        title: 'Toast Title',
+        subtitle: 'Subtitle',
+        image: '../../dist/img/user3-128x128.jpg',
+        imageAlt: 'User Picture',
+      })
+    });
+    $('.toastsDefaultSuccess').click(function() {
+      $(document).Toasts('create', {
+        class: 'bg-success',
+        title: 'Toast Title',
+        subtitle: 'Subtitle',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultInfo').click(function() {
+      $(document).Toasts('create', {
+        class: 'bg-info',
+        title: 'Toast Title',
+        subtitle: 'Subtitle',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultWarning').click(function() {
+      $(document).Toasts('create', {
+        class: 'bg-warning',
+        title: 'Toast Title',
+        subtitle: 'Subtitle',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultDanger').click(function() {
+      $(document).Toasts('create', {
+        class: 'bg-danger',
+        title: 'Toast Title',
+        subtitle: 'Subtitle',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+    $('.toastsDefaultMaroon').click(function() {
+      $(document).Toasts('create', {
+        class: 'bg-maroon',
+        title: 'Toast Title',
+        subtitle: 'Subtitle',
+        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+  });
+</script>
+
+{% endblock %}
+
+
+
+

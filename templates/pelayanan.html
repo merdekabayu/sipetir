@@ -1,0 +1,820 @@
+{% extends 'base.html' %}
+{% block judul %} Pelayanan Data Petir {% endblock %}
+{% block subjudul %} Pelayanan Data Petir {% endblock %}
+{% block mainnav_pelayanan %} active {% endblock %}
+{% block infog_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+.logo {
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.612);
+  /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+  /*border-radius: 5px;*/
+  color: #ffffff;
+} 
+  /*Legend specific*/
+.legend {
+  padding: 6px 8px;
+  border-radius: 10px;
+  font: 14px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(0, 0, 0, 0.604);
+  /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+  /*border-radius: 5px;*/
+  line-height: 24px;
+  color: #ffffff;
+}
+.legend h4 {
+  text-align: center;
+  font-size: 20px;
+  margin: 2px 12px 8px;
+  font-weight: bold;
+  color: #ffffff;
+}
+.legend h5 {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.legend span {
+  position: relative;
+  bottom: 3px;
+}
+
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin: 0 8px 0 0;
+  opacity: 0.7;
+}
+
+.legend i.icon {
+  background-size: 18px;
+  background-color: rgba(255, 255, 255, 0);
+}
+</style>
+{% endblock %}
+{% block content %} 
+  
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row">
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+          <div class="card col-2">
+            <div class="card-header">
+              <h3 class="card-title">Filter Data</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" >
+                    <i class="fa fa-chevron-down pull-right"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+            </div>
+            
+            <div class="card-body">
+              <form action="/pelayanan-petir/sorted" method="POST" enctype = "multipart/form-data">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <label class="col-12" style="text-align: center;">Koordinat Customer</label>
+                    </div>
+                    <div class="row mb-2 ml-1">
+                      <input style="text-align: center;" class="form-control col-5 mr-4" id="Input" placeholder="Lat" name="lat" value="" />
+                      <input style="text-align: center;" class="form-control col-5" id="Input" placeholder="Long" name="long" value="" />
+                    </div>
+                    <hr style="border: 1px dashed white;">
+                    <div class="row">
+                      <label class="col-12" style="text-align: center;">Waktu (Local Time)</label>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group row">
+                          <div class="col-sm-12 mb-2">
+                            <div class="input-group date pl-0 "  id="datefilter" data-target-input="nearest">
+                                <input value="" type="text" class="form-control datetimepicker-input" placeholder="yyyy-mm-dd" name="date1" data-target="#datefilter"/>
+                                <div class="input-group-append" data-target="#datefilter" data-toggle="datetimepicker" >
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-12">
+                            <label class="col-12" style="text-align: center;">s/d</label>
+                          </div>
+                          <div class="col-sm-12">
+                            <div class="input-group date pl-0"  id="datefilter1" data-target-input="nearest">
+                              <input value="" type="text" class="form-control datetimepicker-input" placeholder="yyyy-mm-dd" name="date2" data-target="#datefilter1"/>
+                              <div class="input-group-append" data-target="#datefilter1" data-toggle="datetimepicker" >
+                                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row col-sm-12 mt-4 mb-0">
+                            <label class="col-5 mt-1" style="text-align: center;">UTC  + </label>
+                            <input style="text-align: center;" class="form-control col-5" id="Input" placeholder="9" name="utc" value="9" />
+                          </div>
+                        </div>
+                        <hr style="border: 1px dashed white;">
+                      </div>
+                    </div>
+                    
+                    <div class="row col-sm-12 mt-2">
+                      <label class="col-5 mt-1" style="text-align: center;">Radius : </label>
+                      <input style="text-align: center;" class="form-control col-4" id="Input" placeholder="10" name="rad" value="" />
+                      <label class="col-3 mt-1" style="text-align: center;">Km</label>
+                    </div>
+                    <hr style="border: 1px dashed white;">
+                    <div class="row mt-4">
+                      <div class="custom-file col-sm-12">
+                        <input type="file" name="file" multiple class="custom-file-input" id="customFile" value="tes.txt">
+                        <label class="custom-file-label" for="customFile">Custom *.db3</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12 float-right">
+                    <label for="Input"></label>
+                    <div class="btn-group w-100 pt-2">
+                      <button type="submit" class="btn btn-success col start">
+                        <i class="fas fa-search"></i>
+                        <span>Filter</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-md-10">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Peta Sambaran Petir</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-12 mb-3 align-items-start">
+                    <div id="map" style="width: 100%; height: 600px; position: relative; border-radius: 8px;"></div>
+                  </div>
+                  
+                </div>
+              </div>
+              <!-- /.card-body -->
+              
+            </div>
+            <!-- /.card -->
+            
+          </div>
+          
+        </div>
+            <!-- /.card -->
+        
+          
+          <!-- /.col -->
+        
+        <!-- /.row -->
+
+        <!-- Main row -->
+        
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+
+{% block mapseismisitas %} 
+<script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
+<script src="https://cdn.bootcss.com/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+  var icon_cgp = L.icon({iconUrl:' {{ url_for('static', filename='images/cgp001_0.png') }}', iconSize: [20,20]});
+  var icon_cgm = L.icon({iconUrl: '{{ url_for('static', filename='images/cgn001_0.png') }}', iconSize: [20,20]});
+  var icon_ic = L.icon({iconUrl: '{{ url_for('static', filename='images/icf001_0.png') }}', iconSize: [20,20]});
+  var home = L.icon({iconUrl: '{{ url_for('static', filename='images/home.png') }}', iconSize: [50,50]});
+
+  
+
+  
+  var icon_epic_last = L.icon({iconUrl: '{{ url_for('static', filename='gempa.png') }}', iconSize: [40,40]});
+  
+  
+  var wsm = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  });
+
+  var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  });
+
+  var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+    attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  });
+
+  var googleearth = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 20,
+      attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'});
+
+  
+
+  
+  var imageUrl = '{{ url_for('static', filename='mappetir/sambarancg-densityclip.png') }}';
+  var altText = 'Image ';
+  var latLngBounds = L.latLngBounds([[1.22, 128.1], [0.37, 126.4]]);
+  var imageOverlay1cg = L.imageOverlay(imageUrl, latLngBounds, {
+    alt: altText,
+    interactive: true
+    });
+
+  
+  
+  
+  var shelterMarkers = L.featureGroup();
+  {% for eq in sambaran %}
+  
+  var lat = {{eq.0}}
+  var long = {{eq.1}}
+  var tipe = {{eq.4}}
+
+  {% if eq.4 == '0' %}
+  var tipe = {{eq.4}}
+  var popup = L.popup().setContent("<b>Waktu Kejadian:</b><br>{{eq.2}} LT<br><b>Tipe Sambaran:</b><br>CG+<br><b>Jarak dg Lokasi Anda:</b><br>{{eq.3}} Km");
+  var shelter = L.marker([lat,long], {icon: icon_cgp}).bindPopup(popup).openPopup();
+  {% elif eq.4 == '1' %}
+  var tipe = {{eq.4}}
+  var popup = L.popup().setContent("<b>Waktu Kejadian:</b><br>{{eq.2}} LT<br><b>Tipe Sambaran:</b><br>CG-<br><b>Jarak dg Lokasi Anda:</b><br>{{eq.3}} Km");
+  var shelter = L.marker([lat,long], {icon: icon_cgm}).bindPopup(popup).openPopup();
+  {% else %}
+  var tipe = {{eq.4}} //ini else
+  var popup = L.popup().setContent("<b>Waktu Kejadian:</b><br>{{eq.2}} LT<br><b>Tipe Sambaran:</b><br>IC<br><b>Jarak dg Lokasi Anda:</b><br>{{eq.3}} Km");
+  var shelter = L.marker([lat,long], {icon: icon_ic}).bindPopup(popup).openPopup();
+  {% endif %}
+
+  var currentShelter = window['shelter'];
+  currentShelter.addTo(shelterMarkers);
+  {% endfor %}
+
+  
+
+
+  var baseMaps = {
+    "WorldStreetMap": wsm,
+    "OpenStreetMap": osm,
+    "Google Satelite": googleSat
+  };
+  var overlayMaps = {
+    "Kerapatan CG (Landonly)": imageOverlay1cg,
+    "Sambaran": shelterMarkers
+    
+  };
+
+  
+
+  var map = L.map('map', {
+      center: [{{cust.0}},{{cust.1}}],
+      zoom: 10,
+      minZoom: 10,
+      zoomControl: false,
+      layers: [googleSat,shelterMarkers]
+  });
+
+  
+		
+  var layerControl = L.control.layers(baseMaps,overlayMaps).addTo(map);
+  L.marker([{{cust.0}},{{cust.1}}],{icon: home}).addTo(map).bindPopup("<b>Customer Location<b>").openPopup();
+
+  map.createPane('imagebg');
+  
+
+  L.control.zoom({
+  position: 'bottomright'
+  }).addTo(map);
+   
+  /*Legend specific*/
+  var legend = L.control({ position: "bottomleft" });
+  
+  legend.onAdd = function(map) {
+    var div = L.DomUtil.create("div", "legend");
+    div.innerHTML += "<h4>Legenda</h4>";
+    div.innerHTML += '<hr style="border: 1px dashed white;">'
+    div.innerHTML += "<h5>Simbol</h5>";
+    div.innerHTML += '<i class="icon" style="background-image: url({{ url_for('static', filename='images/cgp001_0.png') }});"></i><span>Cloud to Ground +</span><br>';
+    div.innerHTML += '<i class="icon" style="background-image: url({{ url_for('static', filename='images/cgn001_0.png') }});"></i><span>Cloud to Ground -</span><br>';
+    div.innerHTML += '<i class="icon" style="background-image: url({{ url_for('static', filename='images/icf001_0.png') }});"></i><span>Inter Cloud</span><br>';
+    
+    return div;
+  };
+
+  legend.addTo(map);
+
+  L.LogoControl = L.Control.extend({
+      options: {
+          position: 'topleft'
+          //control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
+      },
+
+      onAdd: function (map) {
+          var div = L.DomUtil.create("div", "logo");
+          div.innerHTML += '<img width=80px src="{{ url_for('static', filename='images/logo-bmkg.jpg') }}">';
+          
+          // L.DomEvent.disableClickPropagation(button);
+          return div;
+      },
+  });
+
+  new L.LogoControl().addTo(map);
+  L.control.scale({ position: "bottomright"}).addTo(map);
+
+
+ 
+
+  // domtoimage.toBlob(document.getElementById('map')).then(function(blob) {
+  //     window.saveAs(blob, 'mapleaflet.png');
+  //   });
+
+
+  // map.on("load", () => { /* produce the image */ })
+  // async new Promise(resolve => map.on("load", () => resolve()))
+  // const dataURL = async domtoimage.toPng(mapElement, { width, height })
+  // const blob = async domtoimage.toBlob(mapElement, { width, height })
+  // saveAs(blob, 'map.png')
+  
+  
+
+
+  // L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  //     attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  // }).addTo(map);
+</script>
+
+{% endblock %}
+
+{% block javascript %} 
+<script>
+  // Sales graph chart
+  var salesGraphChartCanvas = $('#line-chart').get(0).getContext('2d')
+  // $('#revenue-chart').get(0).getContext('2d');
+
+  var salesGraphChartData = {
+    labels: [
+    {% for sum in sumharian %}
+      '{{sum.0}}',
+      {% endfor %}],
+    datasets: [
+      {
+        label: 'Total',
+        fill: false,
+        borderWidth: 1.5,
+        lineTension: 0,
+        spanGaps: true,
+        borderColor: '#efefef',
+        pointRadius: 4,
+        pointHoverRadius: 7,
+        pointColor: '#efefef',
+        pointBackgroundColor: '#efefef',
+        data: [{% for sum in sumharian %}
+              {{sum.4}},
+              {% endfor %}]
+      }
+    ]
+  }
+
+  var salesGraphChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: false,
+          color: '#efefef',
+          drawBorder: false
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          stepSize: 200,
+          fontColor: '#efefef',
+          
+        },
+        gridLines: {
+          display: true,
+          lineWidth: 0.1,
+          color: '#efefef',
+          beginAtZero: false,
+          drawBorder: false
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  // eslint-disable-next-line no-unused-vars
+  var salesGraphChart = new Chart(salesGraphChartCanvas, { // lgtm[js/unused-local-variable]
+    type: 'line',
+    data: salesGraphChartData,
+    options: salesGraphChartOptions
+  })
+  
+</script>
+
+
+
+<script>
+  $(function () {
+  'use strict'
+
+  /* ChartJS
+   * -------
+   * Here we will create a few charts using ChartJS
+   */
+
+  //-----------------------
+  // - MONTHLY SALES CHART -
+  //-----------------------
+
+  // Get context with jQuery - using jQuery's .get() method.
+  var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
+
+  var salesChartData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+      {
+        label: 'Digital Goods',
+        backgroundColor: 'rgba(60,141,188,0.9)',
+        borderColor: 'rgba(60,141,188,0.8)',
+        pointRadius: false,
+        pointColor: '#3b8bba',
+        pointStrokeColor: 'rgba(60,141,188,1)',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: 'rgba(60,141,188,1)',
+        data: [28, 48, 40, 19, 86, 27, 90]
+      },
+      {
+        label: 'Electronics',
+        backgroundColor: 'rgba(210, 214, 222, 1)',
+        borderColor: 'rgba(210, 214, 222, 1)',
+        pointRadius: false,
+        pointColor: 'rgba(210, 214, 222, 1)',
+        pointStrokeColor: '#c1c7d1',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: 'rgba(220,220,220,1)',
+        data: [65, 59, 80, 81, 56, 55, 40]
+      }
+    ]
+  }
+
+  var salesChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        }
+      }],
+      yAxes: [{
+        gridLines: {
+          display: false
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  // eslint-disable-next-line no-unused-vars
+  var salesChart = new Chart(salesChartCanvas, {
+    type: 'line',
+    data: salesChartData,
+    options: salesChartOptions
+  }
+  )
+
+  //---------------------------
+  // - END MONTHLY SALES CHART -
+  //---------------------------
+
+
+  //-------------
+  // - HISTOGRAM CHART -
+  //-------------
+  
+  var ticksStyle = {
+    fontColor: '#FFFFFF',
+    fontStyle: 'bold'
+  }
+
+  var mode = 'index'
+  var intersect = true
+
+  var $visitorsChart = $('#visitors-chart')
+  // eslint-disable-next-line no-unused-vars
+  var visitorsChart = new Chart($visitorsChart, {
+    data: {
+      labels: ['18th', '20th', '22nd', '24th', '26th', '28th', '30th'],
+      datasets: [{
+        type: 'line',
+        data: [7, 2, 2, 3, 5, 3, 1],
+        backgroundColor: 'solid',
+        borderColor: '#007bff',
+        pointBorderColor: '#007bff',
+        pointBackgroundColor: '#007bff',
+        fill: false
+        // pointHoverBackgroundColor: '#007bff',
+        // pointHoverBorderColor    : '#007bff'
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          // display: true,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: ticksStyle
+        }]
+      }
+    }
+  })
+  var $salesChart1 = $('#sales-chart1')
+  var $salesChart = $('#sales-chart')
+  // eslint-disable-next-line no-unused-vars
+  
+  var salesChart = new Chart($salesChart1, {
+    type: 'horizontalBar',
+    data: {
+      labels: ['TERNATE SELATAN', 'TERNATE TENGAH', 'TERNATE UTARA', 'PULAU TERNATE',
+             'TIDORE', 'TIDORE SELATAN', 'TIDORE UTARA','TIDORE TIMUR','OBA UTARA',
+            'JAILOLO SELATAN','JAILOLO'],
+      datasets: [
+        {// CG+
+          label: 'CG+',
+          backgroundColor: '#f56954',
+          borderColor: '#f56954',
+          // data: {{wilayah}}
+          
+          data: [
+                {% for sum in sumwil %}
+                {{sum.1}},
+                {% endfor %}]
+        },
+        {// CG-
+          label: 'CG-',
+          backgroundColor: '#f39c12',
+          borderColor: '#f39c12',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumwil %}
+                {{sum.2}},
+                {% endfor %}]
+        },
+        {// IC
+          label: 'IC',
+          backgroundColor: '#00a65a',
+          borderColor: '#00a65a',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumwil %}
+                {{sum.3}},
+                {% endfor %}]
+        }
+      ]
+    },
+    options: {
+      animation: {
+        onComplete: function () {
+            var chartInstance = this.chart,
+                ctx = chartInstance.ctx;
+                ctx.textAlign = 'left';
+                ctx.fillStyle = "rgba(255,255,255, 1)";
+                ctx.textBaseline = 'top';
+
+                // Loop through each data in the datasets
+
+                // this.data.datasets.forEach(function (dataset, i) {
+                //     var meta = chartInstance.controller.getDatasetMeta(i);
+                //     meta.data.forEach(function (bar, index) {
+                //         var data = dataset.data[index];
+                //         ctx.fillText(data, bar._model.x+5, bar._model.y - 5);
+
+                //     });
+                // });
+            }
+      },
+      categoryPercentage: 1.0, // here 
+      barPercentage: 0.98,  // here
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: true
+      },
+      scales: {
+        yAxes: [{
+          // display: false,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+
+            
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          afterDataLimits(scale) {
+          scale.max += 1
+          },
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+          }, ticksStyle,
+          
+          )
+        }]
+      }
+      
+    }
+  })
+
+  var salesChart = new Chart($salesChart, {
+    type: 'bar',
+    data: {
+      
+      labels: [
+      {% for sum in sumharian %}
+      '{{sum.0}}',
+      {% endfor %}],
+      
+      datasets: [
+        {// CG+
+          label: 'CG+',
+          backgroundColor: '#f56954',
+          borderColor: '#f56954',
+          // data: {{wilayah}}
+          
+          data: [
+                {% for sum in sumharian %}
+                {{sum.1}},
+                {% endfor %}]
+        },
+        {// CG-
+          label: 'CG-',
+          backgroundColor: '#f39c12',
+          borderColor: '#f39c12',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumharian %}
+                {{sum.2}},
+                {% endfor %}]
+        },
+        {// IC
+          label: 'IC',
+          backgroundColor: '#00a65a',
+          borderColor: '#00a65a',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumharian %}
+                {{sum.3}},
+                {% endfor %}]
+        }
+      ]
+    },
+    options: {
+      animation: {
+        onComplete: function () {
+            var chartInstance = this.chart,
+                ctx = chartInstance.ctx;
+                ctx.textAlign = 'center';
+                ctx.fillStyle = "rgba(255,255,255, 1)";
+                ctx.textBaseline = 'bottom';
+
+                // Loop through each data in the datasets
+
+                
+            }
+        },
+      
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: true
+      },
+      scales: {
+        
+        yAxes: [{
+          // display: false,
+          afterDataLimits(scale) {
+          scale.max += 1
+          },
+          display: true,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false,
+          },
+          ticks: $.extend({
+            beginAtZero: true
+          }, ticksStyle)
+        }]
+      }
+    }
+  })
+
+
+
+
+
+  
+</script>
+{% endblock %}
+

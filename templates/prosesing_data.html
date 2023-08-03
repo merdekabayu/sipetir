@@ -1,0 +1,778 @@
+{% extends 'base.html' %}
+{% block judul %} Data Processing Tools {% endblock %}
+{% block subjudul %} Data Processing Tools {% endblock %}
+{% block mainnav_dataproc %} active {% endblock %}
+{% block infog_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+.logo {
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.612);
+  /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+  /*border-radius: 5px;*/
+  color: #ffffff;
+} 
+  /*Legend specific*/
+.legend {
+  padding: 6px 8px;
+  border-radius: 10px;
+  font: 14px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(0, 0, 0, 0.604);
+  /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+  /*border-radius: 5px;*/
+  line-height: 24px;
+  color: #ffffff;
+}
+.legend h4 {
+  text-align: center;
+  font-size: 20px;
+  margin: 2px 12px 8px;
+  font-weight: bold;
+  color: #ffffff;
+}
+.legend h5 {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.legend span {
+  position: relative;
+  bottom: 3px;
+}
+
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin: 0 8px 0 0;
+  opacity: 0.7;
+}
+
+.legend i.icon {
+  background-size: 18px;
+  background-color: rgba(255, 255, 255, 0);
+}
+</style>
+{% endblock %}
+{% block content %} 
+  
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row">
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Export Sum Harian</h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" >
+                      <i class="fa fa-chevron-down pull-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+              </div>
+              
+              <div class="card-body">
+                <form action="/data-processing/sumharian" method="POST" enctype = "multipart/form-data">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <label class="col-12" style="text-align: center;">Batas Koordinat</label>
+                      </div>
+                      <div class="row">
+                        <div class="col-4"></div>
+                        <input style="text-align: center;" class="form-control col-4" id="Input" placeholder="Lat-Max" name="latmax" value="" />
+                        <div class="col-4"></div>
+                      </div>
+                      <div class="row mt-2">
+                        <input style="text-align: center;" class="form-control col-4" id="Input" placeholder="Long-Min" name="longmin" value="" />
+                        <div class="col-4"></div>
+                        <input style="text-align: center;" class="form-control col-4 mb-2" id="Input" placeholder="Long-Max" name="longmax" value="" />
+                      </div>
+                      <div class="row">
+                        <div class="col-4"></div>
+                        <input style="text-align: center;" class="form-control col-4 mr-4" id="Input" placeholder="Lat-Min" name="latmin" value="" />
+                        <div class="col-4"></div>
+                      </div>
+                      <hr style="border: 1px dashed white;">
+                      <div class="row">
+                        <label class="col-12" style="text-align: center;">Waktu (Local Time)</label>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="form-group row">
+                            <div class="col-1"></div>
+                            <div class="col-sm-4">
+                              <div class="input-group date pl-0 "  id="datefilter" data-target-input="nearest">
+                                  <input value="" type="text" class="form-control datetimepicker-input" placeholder="yyyy-mm-dd" name="date1" data-target="#datefilter"/>
+                                  <div class="input-group-append" data-target="#datefilter" data-toggle="datetimepicker" >
+                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                  </div>
+                              </div>
+                            </div>
+                            <label class="col-2" style="text-align: center;">s/d</label>
+                            <div class="col-sm-4">
+                              <div class="input-group date pl-0"  id="datefilter1" data-target-input="nearest">
+                                <input value="" type="text" class="form-control datetimepicker-input" placeholder="yyyy-mm-dd" name="date2" data-target="#datefilter1"/>
+                                <div class="input-group-append" data-target="#datefilter1" data-toggle="datetimepicker" >
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-1"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr style="border: 1px dashed white;">
+                      <div class="row mt-4">
+                        <label class="col-3 mt-1" style="text-align: left;">Data DB3 :</label>
+                        <div class="custom-file col-sm-5">
+                          <input type="file" name="file" multiple class="custom-file-input" id="customFile" value="tes.txt">
+                          <label class="custom-file-label" for="customFile">Data *.db3</label>
+                        </div>
+                      </div>
+                      <div class="row mt-4">
+                        <label class="col-3 mt-1" style="text-align: left;">Save as :</label>
+                        <input style="text-align: left;" class="form-control col-5" id="Input" placeholder="Nama File" name="fileout" value="" />
+                        <label class="ml-2 mt-1">.csv</label>
+                      </div>
+                    </div>
+
+
+                    <div class="col-4"></div>
+                    <div class="col-4"></div>
+                    <div class="col-lg-4 float-right">
+                      <label for="Input"></label>
+                      <div class="btn-group w-100 pt-2">
+                        <button type="submit" class="btn btn-success col start">
+                          <i><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><style>svg{fill:#ffffff}</style><path d="M256 96c38.4 0 73.7 13.5 101.3 36.1l-32.6 32.6c-4.6 4.6-5.9 11.5-3.5 17.4s8.3 9.9 14.8 9.9H448c8.8 0 16-7.2 16-16V64c0-6.5-3.9-12.3-9.9-14.8s-12.9-1.1-17.4 3.5l-34 34C363.4 52.6 312.1 32 256 32c-10.9 0-21.5 .8-32 2.3V99.2c10.3-2.1 21-3.2 32-3.2zM132.1 154.7l32.6 32.6c4.6 4.6 11.5 5.9 17.4 3.5s9.9-8.3 9.9-14.8V64c0-8.8-7.2-16-16-16H64c-6.5 0-12.3 3.9-14.8 9.9s-1.1 12.9 3.5 17.4l34 34C52.6 148.6 32 199.9 32 256c0 10.9 .8 21.5 2.3 32H99.2c-2.1-10.3-3.2-21-3.2-32c0-38.4 13.5-73.7 36.1-101.3zM477.7 224H412.8c2.1 10.3 3.2 21 3.2 32c0 38.4-13.5 73.7-36.1 101.3l-32.6-32.6c-4.6-4.6-11.5-5.9-17.4-3.5s-9.9 8.3-9.9 14.8V448c0 8.8 7.2 16 16 16H448c6.5 0 12.3-3.9 14.8-9.9s1.1-12.9-3.5-17.4l-34-34C459.4 363.4 480 312.1 480 256c0-10.9-.8-21.5-2.3-32zM256 416c-38.4 0-73.7-13.5-101.3-36.1l32.6-32.6c4.6-4.6 5.9-11.5 3.5-17.4s-8.3-9.9-14.8-9.9H64c-8.8 0-16 7.2-16 16l0 112c0 6.5 3.9 12.3 9.9 14.8s12.9 1.1 17.4-3.5l34-34C148.6 459.4 199.9 480 256 480c10.9 0 21.5-.8 32-2.3V412.8c-10.3 2.1-21 3.2-32 3.2z"/></svg></i>
+                          <span>Process</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Gridding Per Km</h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" >
+                      <i class="fa fa-chevron-down pull-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+              </div>
+              
+              <div class="card-body">
+                <form action="/data-processing/gridding" method="POST" enctype = "multipart/form-data">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <label class="col-12" style="text-align: center;">Batas Koordinat</label>
+                      </div>
+                      <div class="row">
+                        <div class="col-4"></div>
+                        <input style="text-align: center;" class="form-control col-4" id="Input" placeholder="Lat-Max" name="latmax" value="" />
+                        <div class="col-4"></div>
+                      </div>
+                      <div class="row mt-2">
+                        <input style="text-align: center;" class="form-control col-4" id="Input" placeholder="Long-Min" name="longmin" value="" />
+                        <div class="col-4"></div>
+                        <input style="text-align: center;" class="form-control col-4 mb-2" id="Input" placeholder="Long-Max" name="longmax" value="" />
+                      </div>
+                      <div class="row">
+                        <div class="col-4"></div>
+                        <input style="text-align: center;" class="form-control col-4 mr-4" id="Input" placeholder="Lat-Min" name="latmin" value="" />
+                        <div class="col-4"></div>
+                      </div>
+                      <hr style="border: 1px dashed white;">
+                      <div class="row mt-4">
+                        <label class="col-3 mt-1" style="text-align: left;">Data DB3 :</label>
+                        <div class="custom-file col-sm-5">
+                          <input type="file" name="file" multiple class="custom-file-input" id="customFile" value="tes.txt">
+                          <label class="custom-file-label" for="customFile">Data *.db3</label>
+                        </div>
+                      </div>
+                      <div class="row mt-4">
+                        <label class="col-3 mt-1" style="text-align: left;">Save as :</label>
+                        <input style="text-align: left;" class="form-control col-5" id="Input" placeholder="Nama File" name="fileout" value="" />
+                        <label class="ml-2 mt-1">.csv</label>
+                      </div>
+                    </div>
+
+
+                    <div class="col-4"></div>
+                    <div class="col-4"></div>
+                    <div class="col-lg-4 float-right">
+                      <label for="Input"></label>
+                      <div class="btn-group w-100 pt-2">
+                        <button type="submit" class="btn btn-success col start">
+                          <i><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><style>svg{fill:#ffffff}</style><path d="M256 96c38.4 0 73.7 13.5 101.3 36.1l-32.6 32.6c-4.6 4.6-5.9 11.5-3.5 17.4s8.3 9.9 14.8 9.9H448c8.8 0 16-7.2 16-16V64c0-6.5-3.9-12.3-9.9-14.8s-12.9-1.1-17.4 3.5l-34 34C363.4 52.6 312.1 32 256 32c-10.9 0-21.5 .8-32 2.3V99.2c10.3-2.1 21-3.2 32-3.2zM132.1 154.7l32.6 32.6c4.6 4.6 11.5 5.9 17.4 3.5s9.9-8.3 9.9-14.8V64c0-8.8-7.2-16-16-16H64c-6.5 0-12.3 3.9-14.8 9.9s-1.1 12.9 3.5 17.4l34 34C52.6 148.6 32 199.9 32 256c0 10.9 .8 21.5 2.3 32H99.2c-2.1-10.3-3.2-21-3.2-32c0-38.4 13.5-73.7 36.1-101.3zM477.7 224H412.8c2.1 10.3 3.2 21 3.2 32c0 38.4-13.5 73.7-36.1 101.3l-32.6-32.6c-4.6-4.6-11.5-5.9-17.4-3.5s-9.9 8.3-9.9 14.8V448c0 8.8 7.2 16 16 16H448c6.5 0 12.3-3.9 14.8-9.9s1.1-12.9-3.5-17.4l-34-34C459.4 363.4 480 312.1 480 256c0-10.9-.8-21.5-2.3-32zM256 416c-38.4 0-73.7-13.5-101.3-36.1l32.6-32.6c4.6-4.6 5.9-11.5 3.5-17.4s-8.3-9.9-14.8-9.9H64c-8.8 0-16 7.2-16 16l0 112c0 6.5 3.9 12.3 9.9 14.8s12.9 1.1 17.4-3.5l34-34C148.6 459.4 199.9 480 256 480c10.9 0 21.5-.8 32-2.3V412.8c-10.3 2.1-21 3.2-32 3.2z"/></svg></i>
+                          <span>Process</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Nex To DB3</h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" >
+                      <i class="fa fa-chevron-down pull-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+              </div>
+              
+              <div class="card-body">
+                <form action="/data-processing/nex2db" method="POST" enctype = "multipart/form-data">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="row mt-4">
+                        <label class="col-5 mt-1" style="text-align: left;">Koordinat Stasiun :</label>
+                        <input style="text-align: left;" class="form-control col-3" id="Input" placeholder="Latitude" name="lat" value="" />
+                        <label class="ml-2 mr-2 mt-1">-</label>
+                        <input style="text-align: left;" class="form-control col-3" id="Input" placeholder="Longitude" name="long" value="" />
+                        
+                      </div>
+                      
+                      <div class="row mt-4">
+                        <label class="col-5 mt-1" style="text-align: left;">UTC +</label>
+                        <input style="text-align: left;" class="form-control col-2" id="Input" placeholder="" name="utc" value="" />
+                      </div>
+                      
+                      <div class="row mt-4">
+                        <label class="col-5 mt-1" style="text-align: left;">Data NEX :</label>
+                        <div class="custom-file col-sm-5">
+                          <input type="file" name="file" multiple class="custom-file-input" id="customFile" value="">
+                          <label class="custom-file-label" for="customFile">Data *.nex</label>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <label class="col-5 " style="text-align: left;"></label>
+                        <p class="col-7 " style="text-align: left;">* format : yyyymmdd.nex</p>
+                      </div>
+                      <div class="row mt-4">
+                        <label class="col-5 mt-1" style="text-align: left;">Save as :</label>
+                        <input style="text-align: left;" class="form-control col-5" id="Input" placeholder="Nama File" name="fileout" value="" />
+                        <label class="ml-2 mt-1">.zip</label>
+                      </div>
+                    </div>
+
+
+                    <div class="col-4"></div>
+                    <div class="col-4"></div>
+                    <div class="col-lg-4 float-right">
+                      <label for="Input"></label>
+                      <div class="btn-group w-100 pt-2">
+                        <button type="submit" class="btn btn-success col start">
+                          <i><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><style>svg{fill:#ffffff}</style><path d="M256 96c38.4 0 73.7 13.5 101.3 36.1l-32.6 32.6c-4.6 4.6-5.9 11.5-3.5 17.4s8.3 9.9 14.8 9.9H448c8.8 0 16-7.2 16-16V64c0-6.5-3.9-12.3-9.9-14.8s-12.9-1.1-17.4 3.5l-34 34C363.4 52.6 312.1 32 256 32c-10.9 0-21.5 .8-32 2.3V99.2c10.3-2.1 21-3.2 32-3.2zM132.1 154.7l32.6 32.6c4.6 4.6 11.5 5.9 17.4 3.5s9.9-8.3 9.9-14.8V64c0-8.8-7.2-16-16-16H64c-6.5 0-12.3 3.9-14.8 9.9s-1.1 12.9 3.5 17.4l34 34C52.6 148.6 32 199.9 32 256c0 10.9 .8 21.5 2.3 32H99.2c-2.1-10.3-3.2-21-3.2-32c0-38.4 13.5-73.7 36.1-101.3zM477.7 224H412.8c2.1 10.3 3.2 21 3.2 32c0 38.4-13.5 73.7-36.1 101.3l-32.6-32.6c-4.6-4.6-11.5-5.9-17.4-3.5s-9.9 8.3-9.9 14.8V448c0 8.8 7.2 16 16 16H448c6.5 0 12.3-3.9 14.8-9.9s1.1-12.9-3.5-17.4l-34-34C459.4 363.4 480 312.1 480 256c0-10.9-.8-21.5-2.3-32zM256 416c-38.4 0-73.7-13.5-101.3-36.1l32.6-32.6c4.6-4.6 5.9-11.5 3.5-17.4s-8.3-9.9-14.8-9.9H64c-8.8 0-16 7.2-16 16l0 112c0 6.5 3.9 12.3 9.9 14.8s12.9 1.1 17.4-3.5l34-34C148.6 459.4 199.9 480 256 480c10.9 0 21.5-.8 32-2.3V412.8c-10.3 2.1-21 3.2-32 3.2z"/></svg></i>
+                          <span>Process</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          
+          
+        </div>
+            <!-- /.card -->
+        
+          
+          <!-- /.col -->
+        
+        <!-- /.row -->
+
+        <!-- Main row -->
+        
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+
+{% block mapseismisitas %} 
+
+
+{% endblock %}
+
+{% block javascript %} 
+<script>
+  // Sales graph chart
+  var salesGraphChartCanvas = $('#line-chart').get(0).getContext('2d')
+  // $('#revenue-chart').get(0).getContext('2d');
+
+  var salesGraphChartData = {
+    labels: [
+    {% for sum in sumharian %}
+      '{{sum.0}}',
+      {% endfor %}],
+    datasets: [
+      {
+        label: 'Total',
+        fill: false,
+        borderWidth: 1.5,
+        lineTension: 0,
+        spanGaps: true,
+        borderColor: '#efefef',
+        pointRadius: 4,
+        pointHoverRadius: 7,
+        pointColor: '#efefef',
+        pointBackgroundColor: '#efefef',
+        data: [{% for sum in sumharian %}
+              {{sum.4}},
+              {% endfor %}]
+      }
+    ]
+  }
+
+  var salesGraphChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: false,
+          color: '#efefef',
+          drawBorder: false
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          stepSize: 200,
+          fontColor: '#efefef',
+          
+        },
+        gridLines: {
+          display: true,
+          lineWidth: 0.1,
+          color: '#efefef',
+          beginAtZero: false,
+          drawBorder: false
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  // eslint-disable-next-line no-unused-vars
+  var salesGraphChart = new Chart(salesGraphChartCanvas, { // lgtm[js/unused-local-variable]
+    type: 'line',
+    data: salesGraphChartData,
+    options: salesGraphChartOptions
+  })
+  
+</script>
+
+
+
+<script>
+  $(function () {
+  'use strict'
+
+  /* ChartJS
+   * -------
+   * Here we will create a few charts using ChartJS
+   */
+
+  //-----------------------
+  // - MONTHLY SALES CHART -
+  //-----------------------
+
+  // Get context with jQuery - using jQuery's .get() method.
+  var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
+
+  var salesChartData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+      {
+        label: 'Digital Goods',
+        backgroundColor: 'rgba(60,141,188,0.9)',
+        borderColor: 'rgba(60,141,188,0.8)',
+        pointRadius: false,
+        pointColor: '#3b8bba',
+        pointStrokeColor: 'rgba(60,141,188,1)',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: 'rgba(60,141,188,1)',
+        data: [28, 48, 40, 19, 86, 27, 90]
+      },
+      {
+        label: 'Electronics',
+        backgroundColor: 'rgba(210, 214, 222, 1)',
+        borderColor: 'rgba(210, 214, 222, 1)',
+        pointRadius: false,
+        pointColor: 'rgba(210, 214, 222, 1)',
+        pointStrokeColor: '#c1c7d1',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: 'rgba(220,220,220,1)',
+        data: [65, 59, 80, 81, 56, 55, 40]
+      }
+    ]
+  }
+
+  var salesChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        }
+      }],
+      yAxes: [{
+        gridLines: {
+          display: false
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  // eslint-disable-next-line no-unused-vars
+  var salesChart = new Chart(salesChartCanvas, {
+    type: 'line',
+    data: salesChartData,
+    options: salesChartOptions
+  }
+  )
+
+  //---------------------------
+  // - END MONTHLY SALES CHART -
+  //---------------------------
+
+
+  //-------------
+  // - HISTOGRAM CHART -
+  //-------------
+  
+  var ticksStyle = {
+    fontColor: '#FFFFFF',
+    fontStyle: 'bold'
+  }
+
+  var mode = 'index'
+  var intersect = true
+
+  var $visitorsChart = $('#visitors-chart')
+  // eslint-disable-next-line no-unused-vars
+  var visitorsChart = new Chart($visitorsChart, {
+    data: {
+      labels: ['18th', '20th', '22nd', '24th', '26th', '28th', '30th'],
+      datasets: [{
+        type: 'line',
+        data: [7, 2, 2, 3, 5, 3, 1],
+        backgroundColor: 'solid',
+        borderColor: '#007bff',
+        pointBorderColor: '#007bff',
+        pointBackgroundColor: '#007bff',
+        fill: false
+        // pointHoverBackgroundColor: '#007bff',
+        // pointHoverBorderColor    : '#007bff'
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          // display: true,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: ticksStyle
+        }]
+      }
+    }
+  })
+  var $salesChart1 = $('#sales-chart1')
+  var $salesChart = $('#sales-chart')
+  // eslint-disable-next-line no-unused-vars
+  
+  var salesChart = new Chart($salesChart1, {
+    type: 'horizontalBar',
+    data: {
+      labels: ['TERNATE SELATAN', 'TERNATE TENGAH', 'TERNATE UTARA', 'PULAU TERNATE',
+             'TIDORE', 'TIDORE SELATAN', 'TIDORE UTARA','TIDORE TIMUR','OBA UTARA',
+            'JAILOLO SELATAN','JAILOLO'],
+      datasets: [
+        {// CG+
+          label: 'CG+',
+          backgroundColor: '#f56954',
+          borderColor: '#f56954',
+          // data: {{wilayah}}
+          
+          data: [
+                {% for sum in sumwil %}
+                {{sum.1}},
+                {% endfor %}]
+        },
+        {// CG-
+          label: 'CG-',
+          backgroundColor: '#f39c12',
+          borderColor: '#f39c12',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumwil %}
+                {{sum.2}},
+                {% endfor %}]
+        },
+        {// IC
+          label: 'IC',
+          backgroundColor: '#00a65a',
+          borderColor: '#00a65a',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumwil %}
+                {{sum.3}},
+                {% endfor %}]
+        }
+      ]
+    },
+    options: {
+      animation: {
+        onComplete: function () {
+            var chartInstance = this.chart,
+                ctx = chartInstance.ctx;
+                ctx.textAlign = 'left';
+                ctx.fillStyle = "rgba(255,255,255, 1)";
+                ctx.textBaseline = 'top';
+
+                // Loop through each data in the datasets
+
+                // this.data.datasets.forEach(function (dataset, i) {
+                //     var meta = chartInstance.controller.getDatasetMeta(i);
+                //     meta.data.forEach(function (bar, index) {
+                //         var data = dataset.data[index];
+                //         ctx.fillText(data, bar._model.x+5, bar._model.y - 5);
+
+                //     });
+                // });
+            }
+      },
+      categoryPercentage: 1.0, // here 
+      barPercentage: 0.98,  // here
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: true
+      },
+      scales: {
+        yAxes: [{
+          // display: false,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+
+            
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          afterDataLimits(scale) {
+          scale.max += 1
+          },
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+          }, ticksStyle,
+          
+          )
+        }]
+      }
+      
+    }
+  })
+
+  var salesChart = new Chart($salesChart, {
+    type: 'bar',
+    data: {
+      
+      labels: [
+      {% for sum in sumharian %}
+      '{{sum.0}}',
+      {% endfor %}],
+      
+      datasets: [
+        {// CG+
+          label: 'CG+',
+          backgroundColor: '#f56954',
+          borderColor: '#f56954',
+          // data: {{wilayah}}
+          
+          data: [
+                {% for sum in sumharian %}
+                {{sum.1}},
+                {% endfor %}]
+        },
+        {// CG-
+          label: 'CG-',
+          backgroundColor: '#f39c12',
+          borderColor: '#f39c12',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumharian %}
+                {{sum.2}},
+                {% endfor %}]
+        },
+        {// IC
+          label: 'IC',
+          backgroundColor: '#00a65a',
+          borderColor: '#00a65a',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumharian %}
+                {{sum.3}},
+                {% endfor %}]
+        }
+      ]
+    },
+    options: {
+      animation: {
+        onComplete: function () {
+            var chartInstance = this.chart,
+                ctx = chartInstance.ctx;
+                ctx.textAlign = 'center';
+                ctx.fillStyle = "rgba(255,255,255, 1)";
+                ctx.textBaseline = 'bottom';
+
+                // Loop through each data in the datasets
+
+                
+            }
+        },
+      
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: true
+      },
+      scales: {
+        
+        yAxes: [{
+          // display: false,
+          afterDataLimits(scale) {
+          scale.max += 1
+          },
+          display: true,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false,
+          },
+          ticks: $.extend({
+            beginAtZero: true
+          }, ticksStyle)
+        }]
+      }
+    }
+  })
+
+
+
+
+
+  
+</script>
+{% endblock %}
+

@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block judul %}V2.0{% endblock %}
+{% block mainpage_css %} 
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/adminlte.min.css') }}">
+  <!-- PETIR REALTIME -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='libpetir/css/leaflet.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='libpetir/css/MarkerCluster.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='libpetir/css/custom.css') }}" type="text/css">
+  
+  <!-- <script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/08563539-773F-EA44-9F8E-C3D0162FD305/main.js" charset="UTF-8"></script> -->
+  <script type="text/javascript">function showLocalTime(a,b,c,d){if(document.getElementById&&document.getElementById(a)){this.container=document.getElementById(a),this.displayversion=d;var e="server-php"==b?'<? print date("F d, Y H:i:s", time())?>':"server-ssi"==b?'<!--#config timefmt="%B %d, %Y %H:%M:%S"--><!--#echo var="DATE_LOCAL" -->':"8/15/2018 1:56:39 PM";this.localtime=this.serverdate=new Date(e),this.localtime.setTime(this.serverdate.getTime()+60*c*1e3),this.updateTime(),this.updateContainer()}}function formatField(a,b){if("undefined"!=typeof b){var c=a>12?a-12:a;return 0==c?12:c}return a<=9?"0"+a:a}var minggutxt=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],weekdaystxt=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],bulantxt=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],monthstxt=["January","February","March","April","May","June","July","August","September","October","November","December"];showLocalTime.prototype.updateTime=function(){var a=this;this.localtime.setSeconds(this.localtime.getSeconds()+1),setTimeout(function(){a.updateTime()},1e3)},showLocalTime.prototype.updateContainer=function(){var a=this;if("long"==this.displayversion)this.container.innerHTML=this.localtime.toLocaleString();else{var b=this.localtime.getHours(),c=this.localtime.getMinutes(),d=this.localtime.getSeconds(),k=(this.localtime.getDate(),this.localtime.getUTCDate(),minggutxt[this.localtime.getDay()],bulantxt[this.localtime.getMonth()],weekdaystxt[this.localtime.getUTCDay()],monthstxt[this.localtime.getUTCMonth()],b+1);k>=24&&(k-=24);var l=b+2;l>=24&&(l-=24);var m=b-7;m<0&&(m+=24);this.container.innerHTML="<span class='hari-digit hidden-sm'><a href='http://jam.bmkg.go.id/' target='_blank'>Standar Waktu Indonesia</a> </span><span class='FontDigit'>"+formatField(b)+":"+formatField(c)+":"+formatField(d)+" WIB / </span><span class='FontDigit'>"+formatField(m)+":"+formatField(c)+":"+formatField(d)+" UTC</span>"}setTimeout(function(){a.updateContainer()},1e3)};
+	</script>
+	<script type="text/javascript">
+		if(window.top!==window.self || top != self){ window.top.location=window.self.location;top.location.replace(location);}
+	</script>
+
+  <style>
+    div.gallery {
+        margin: 5px;   
+        float: left;
+        width: 80px;
+    }
+    div.gallery img {
+        width: 100%;
+        height: auto;
+    }
+    
+    div.desc {
+        padding: 15px;
+        text-align: center;
+    }
+    #map {
+            position: relative;
+            border: 1px solid black;
+            border-radius: 8px;
+            height: 600px;  /* or as desired */
+            width: 100%;  /* This means "100% of the width of its container", the .col-md-8 */
+          }
+  </style>
+  
+{% endblock %}
+{% block subjudul %} SI-PETIR V2.0 {% endblock %}
+{% block menuopen_ig %} {% endblock %}
+{% block mainnav_add %} active {% endblock %}
+
+{% block content %} 
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row">
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            
+            <!-- /.card -->
+            
+
+
+            <div class="card ">
+              <div class="card-header ">
+                <h3 class="card-title" style="text-align: center;">Monitoring Petir Wilayah Ternate (Realtime)</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 ">
+                    <div class="row">
+                      <div tabindex="0" class="leaflet-container leaflet-fade-anim" id="map" style="center: 0px; top:0px; width: 100%; height: 500px; position: relative; background-color: white; background-repeat: no-repeat; background-attachment: fixed;">
+                        <canvas id="pnlClockCanvas" width="220" height="30" style="z-index: 2; position:relative; left:0px; top:5px; background-repeat: no-repeat; background-attachment: fixed;">
+                                  
+                          Your browser does not support HTML5 Canvas.
+                        </canvas>
+                        <canvas id="pnlCanvas" width="245" height="330" style="z-index: 2; position:relative; left:0px; top:5px; background-repeat: no-repeat; background-attachment: fixed;">
+                                  
+                          Your browser does not support HTML5 Canvas.
+                        </canvas>
+          
+                        <canvas id="pnlSymCanvas" width="245" height="65" style="z-index: 2; position:relative; left:0px; top:340px; background-repeat: no-repeat; background-attachment: fixed;">
+                        
+                          Your browser does not support HTML5 Canvas.
+                        </canvas>
+                        <script>L_PREFER_CANVAS = true;</script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/leaflet_073mod.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/leaflet.markercluster.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/Leaflet.Geodesic.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/extentsions.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/preLoad.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/symbols.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/Counter.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/Util.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/ClockPanel.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/DataPanel.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/LegendPanel.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/LegendPanelNC.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/options/mapProviders.js') }}"></script>
+                        <script src="{{ url_for('static', filename='libpetir/lib/main.js') }}"></script>
+                    
+                      </div>
+                    </div>
+                    <div class="row">
+                        <div style="float: left; font-size: 17px;">
+                          <br>
+                          <b> Sumber :  Stasiun Geofisika Ternate </b>   
+                          
+                          <br><br>
+                          <p style="float: left;"><b>Keterangan :</b><p> <br>
+                                
+                          <li style="float: left;">Lingkaran warna orange merupakan radius dari posisi sensor dalam satuan km</li> <br>
+                          <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/cgn001_0.png') }}" > Petir Jenis CG (Cloud to Ground) negatif </li> <br>
+                          <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/cgp002_0.png') }}" > Petir Jenis CG (Cloud to Ground) positif </li> <br>
+                          <li style="float: left;"><img src="{{ url_for('static', filename='libpetir/img/set0/icf003_0.png') }}" > Petir Jenis IC (Intra/Inter Cloud) </li>
+                          
+                          
+                        </div>
+                    </div>
+                    <!-- <div id="map1"></div>
+                      <div class="row" data-aos="zoom-in">
+                              <div class="map1 container-fluid mb-4" style="margin-bottom: 100px;" id="map1" data-aos="fade-up">
+                              </div>
+                          </div>
+                  </div> -->
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock %}
+
+{% block skriptabel %} 
+
+
+
+
+{% endblock %}

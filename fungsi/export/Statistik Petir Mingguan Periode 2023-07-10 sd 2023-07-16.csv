@@ -1,0 +1,30 @@
+SAMBARAN TOTAL
+Tipe,Jumlah
+CG+,88
+CG-,99
+IC,625
+Jumlah Total,812
+
+SAMBARAN PER HARI
+Tanggal,CG+,CG-,IC,Jumlah
+10-Jul-23,0,2,2,4
+11-Jul-23,0,0,0,0
+12-Jul-23,0,1,4,5
+13-Jul-23,12,17,71,100
+14-Jul-23,76,79,503,658
+15-Jul-23,0,0,5,5
+16-Jul-23,0,0,38,38
+
+SAMBARAN PER WILAYAH
+KECAMATAN,CG+,CG-,IC,Jumlah
+Ternate Selatan,1,0,8,9
+Ternate Tengah,0,0,7,7
+Ternate Utara,0,0,0,0
+Pulau Ternate,0,1,6,7
+Tidore,6,3,25,34
+Tidore Selatan,1,2,8,11
+Tidore Utara,5,9,97,111
+Tidore Timur,4,2,26,32
+Oba Utara,4,1,24,29
+Jailolo Selatan,0,1,1,2
+Jailolo,0,1,4,5

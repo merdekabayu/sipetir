@@ -1,0 +1,1286 @@
+{% extends 'base.html' %}
+{% block judul %} Infografis Petir Periode {{rangedate[0]}} s/d {{rangedate[1]}}  {% endblock %}
+{% block subjudul %} Statistik Petir  |   Periode {{rangedate[0]}} s/d {{rangedate[1]}} {% endblock %}
+{% block menuopen_ig %} menu-open {% endblock %}
+{% block mainnav_ig %} active {% endblock %}
+{% block nav_igcustom %} active {% endblock %}
+{% block infog_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+.logo {
+  text-align: left;
+  padding-top: 0%;
+  border-radius: 10px;
+  /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+  /*border-radius: 5px;*/
+  color: #ffffff;
+} 
+  /*Legend specific*/
+.legend {
+  padding: 6px 8px;
+  border-radius: 10px;
+  font: 14px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(0, 0, 0, 0.397);
+  /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+  /*border-radius: 5px;*/
+  line-height: 24px;
+  color: #ffffff;
+}
+.legend h4 {
+  text-align: center;
+  font-size: 20px;
+  margin: 2px 12px 8px;
+  font-weight: bold;
+  color: #ffffff;
+}
+.legend h5 {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.legend span {
+  position: relative;
+  bottom: 3px;
+}
+
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin: 0 8px 0 0;
+  opacity: 0.7;
+}
+
+.legend i.icon {
+  background-size: 18px;
+  background-color: rgba(255, 255, 255, 0);
+}
+</style>
+{% endblock %}
+{% block content %} 
+  
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row">
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-2">
+            <div class="info-box">
+              <span class="info-box-icon bg-primary elevation-1">
+                <i class="fas fa-bolt"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text"><h5><strong>Total Sambaran</strong></h5></span>
+                <span class="info-box-text">
+                  <h5>{{total.0}} sambaran</h5>
+                  <!-- <h5>{{jml_gempa}} sambaran</h5> -->
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-6 col-lg-2">
+            <div class="info-box">
+              <span class="info-box-icon bg-danger elevation-1">
+                <i class="fas fa-bolt"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text"><h5><strong>CG +</strong></h5></span>
+                <span class="info-box-text">
+                  <h5>{{total.1}} sambaran</h5>
+                  <!-- <h5>{{jml_gempa}} sambaran</h5> -->
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-6 col-lg-2">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-warning elevation-1">
+                <i class="fas fa-bolt"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text"><h5><strong>CG -</strong></h5></span>
+                <span class="info-box-text">
+                  <h5>{{total.2}} sambaran</h5>
+                  <!-- <h5>{{jml_drskn}}</h5> -->
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-6 col-lg-2">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-success elevation-1">
+                <i class="fas fa-bolt"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text"><h5><strong>Inter Cloud</strong></h5></span>
+                <span class="info-box-text">
+                  <h5>{{total.3}} sambaran</h5>
+                  <!-- <h5>{{jml_drskn}}</h5> -->
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          
+          <!--
+           /.col -->
+          <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="row">
+              <div class="col">
+                <div class="float-right ">
+                  <div class="info-box mb-3">
+      
+                    <div class="info-box-content">
+                      <span class="info-box-text"><h5>Download<br>CSV</h5></span>
+                      
+                    </div>
+                    <a href="/export/mingguan" type="submit" class="btn btn-navbar info-box-icon bg-warning elevation-1 ml-2"><i class="fas fa-file-download"></i>
+                    </a>
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+          
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Peta Seismisitas</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-12 mb-3 align-items-start">
+                    <div id="map" style="width: 100%; height: 600px; position: relative; border-radius: 8px;"></div>
+                  </div>
+                  
+                </div>
+              </div>
+              <!-- /.card-body -->
+              
+            </div>
+            <!-- /.card -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Histogram Petir Harian</h3>
+                    <div class="card-tools">
+                      
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="position-relative">
+                          <canvas id="sales-chart" height="255"></canvas>
+                          <canvas hidden id="salesChart" height="180" style="height: 180px;"></canvas>
+                        </div>
+                        
+                      </div>
+                      
+                    </div>
+                    <!-- /.row -->
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Total Sambaran Harian</h3>
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="position-relative">
+                          <canvas class="chart" id="line-chart" style="min-height: 255px; height: 200px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                        
+                      </div>
+                      
+                    </div>
+                    <!-- /.row -->
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+            </div>
+            
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Sambaran per Wilayah</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="">
+                  <canvas id="sales-chart1" height="615"></canvas>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Statistik Sambaran</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                
+                <div class="row">
+                  <div class="col-md-8 float-right">
+                    <div class="chart-responsive">
+                      <canvas id="pieChart1" height="270"></canvas>
+                    </div>
+                      <!-- ./chart-responsive -->
+                  </div>
+                  <div class="col-md-4 ">
+                    <ul class="chart-legend clearfix ml-1">
+                      <li><i class="far fa-circle text-danger"></i> CG +</li>
+                      <li><i class="far fa-circle text-warning"></i> CG -</li>
+                      <li><i class="far fa-circle text-success"></i> IC</li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+              <!-- /.card-body -->
+              <!-- /.card-footer -->
+            </div>
+
+            <div hidden class="card">
+              <div class="card-header">
+                <h3 class="card-title">Statistik Kedalaman</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                
+                <div class="row">
+                  <div class="col-md-8 float-right">
+                    <div class="chart-responsive ">
+                      <canvas id="pieChart" height="150"></canvas>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <ul class="chart-legend clearfix">
+                      <li><i class="far fa-circle text-danger"></i> < 60 Km</li>
+                      <li><i class="far fa-circle text-warning"></i> 60 - 300 Km</li>
+                      <li><i class="far fa-circle text-success"></i> > 300 Km</li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><label>Total Sambaran Harian</label></h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" onclick="copy('histo')" title="Copy Data">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="col-12">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                      <!-- /.<th style="width: 10px;">No</th>-->
+                      <th style="width: 100px;">Tanggal</th>
+                      <th style="width: 50px;">CG+</th>
+                      <th style="width: 50px;">CG-</th>
+                      <th style="width: 50px;">IC</th>
+                      <th style="width: 50px;">Total</th>
+                    </tr>
+                    </thead>
+                    <tbody id="histo">
+                      {% for sum in sumharian %}
+                      <tr>
+                        <!-- /.<td>1</td>-->
+                        <td>{{sum.0}}</td>
+                        <td>{{sum.1}}</td>
+                        <td>{{sum.2}}</td>
+                        <td>{{sum.3}}</td>
+                        <td>{{sum.4}}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><label>Sambaran per Wilayah</label></h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" onclick="copy('wilayah')" title="Copy Data">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="col-12">
+                    <table id="example3" class="table table-bordered table-striped">
+                      <thead>
+                      <tr>
+                        <!-- /.<th style="width: 10px;">No</th>-->
+                        <th style="min-width: 100px;">Wilayah (Kecamatan)</th>
+                        <th style="width: 40px;">CG+</th>
+                        <th style="width: 40px;">CG-</th>
+                        <th style="width: 40px;">IC</th>
+                        <th style="width: 40px;">Total</th>
+                      </tr>
+                      </thead>
+                      <tbody id="wilayah">
+                        {% for sum in sumwil %}
+                        <tr>
+                          <!-- /.<td>1</td>-->
+                          <td>{{sum.0}}</td>
+                          <td>{{sum.1}}</td>
+                          <td>{{sum.2}}</td>
+                          <td>{{sum.3}}</td>
+                          <td>{{sum.4}}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><label>Total Sambaran</label></h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" onclick="copy('magnitudo')" title="Copy Data">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="col-12">
+                    <table class="table table-bordered table-striped">
+                      <thead>
+                      <tr>
+                        <!-- /.<th style="width: 10px;">No</th>-->
+                        <th style="width: 100px;">Tipe</th>
+                        <th style="width: 100px;">Jumlah</th>
+                      </tr>
+                      </thead>
+                      <tbody id="magnitudo">
+                        <tr>
+                          <!-- /.<td>1</td>-->
+                          <td>Cloud to Ground +</td>
+                          <td>{{total.1}}</td>
+                        </tr>
+                        <tr>
+                          <!-- /.<td>1</td>-->
+                          <td>Cloud to Ground -</td>
+                          <td>{{total.2}}</td>
+                        </tr>
+                        <tr>
+                          <!-- /.<td>1</td>-->
+                          <td>Inter Cloud</td>
+                          <td>{{total.3}}</td>
+                        </tr>
+                        <tr>
+                          <!-- /.<td>1</td>-->
+                          <td>Total</td>
+                          <td>{{total.0}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+          </div>
+          
+          
+        </div>
+            <!-- /.card -->
+        
+          
+          <!-- /.col -->
+        
+        <!-- /.row -->
+
+        <!-- Main row -->
+        
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+
+{% block mapseismisitas %} 
+<script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
+<script src="https://cdn.bootcss.com/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+  var icon_cgp = L.icon({iconUrl:' {{ url_for('static', filename='images/cgp001_0.png') }}', iconSize: [12,12]});
+  var icon_cgm = L.icon({iconUrl: '{{ url_for('static', filename='images/cgn001_0.png') }}', iconSize: [12,12]});
+  var icon_ic = L.icon({iconUrl: '{{ url_for('static', filename='images/icf001_0.png') }}', iconSize: [12,12]});
+  
+
+  
+  var icon_epic_last = L.icon({iconUrl: '{{ url_for('static', filename='gempa.png') }}', iconSize: [40,40]});
+  
+  
+  var wsm = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  });
+
+  var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  });
+
+  var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+    attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  });
+
+  var googleearth = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 20,
+      attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'});
+
+  
+
+  var imageUrl = '{{ url_for('static', filename='mappetir/sambaran-density.png') }}';
+  var altText = 'Image ';
+  var latLngBounds = L.latLngBounds([[1.22, 128.1], [0.37, 126.4]]);
+  var imageOverlay = L.imageOverlay(imageUrl, latLngBounds, {
+    alt: altText,
+    interactive: true
+    });
+  var imageUrl = '{{ url_for('static', filename='mappetir/sambaran-densityclip.png') }}';
+  var altText = 'Image ';
+  var latLngBounds = L.latLngBounds([[1.22, 128.1], [0.37, 126.4]]);
+  var imageOverlay1 = L.imageOverlay(imageUrl, latLngBounds, {
+    alt: altText,
+    interactive: true
+    });
+
+    var imageUrl = '{{ url_for('static', filename='mappetir/sambarancg-density.png') }}';
+  var altText = 'Image ';
+  var latLngBounds = L.latLngBounds([[1.22, 128.1], [0.37, 126.4]]);
+  var imageOverlaycg = L.imageOverlay(imageUrl, latLngBounds, {
+    alt: altText,
+    interactive: true
+    });
+  var imageUrl = '{{ url_for('static', filename='mappetir/sambarancg-densityclip.png') }}';
+  var altText = 'Image ';
+  var latLngBounds = L.latLngBounds([[1.22, 128.1], [0.37, 126.4]]);
+  var imageOverlay1cg = L.imageOverlay(imageUrl, latLngBounds, {
+    alt: altText,
+    interactive: true
+    });
+
+  
+  
+  
+  var shelterMarkers = L.featureGroup();
+  {% for eq in sam %}
+  
+  var lat = {{eq.1}}
+  var long = {{eq.0}}
+  var tipe = {{eq.2}}
+  // var shelter = L.marker([lat,long], {icon: icon_cgp});
+  {% if eq.2 == 0.0 %}
+  var tipe = {{eq.2}}
+  var shelter = L.marker([lat,long], {icon: icon_cgp});
+  {% elif eq.2 == 1.0 %}
+  var tipe = {{eq.2}}
+  var shelter = L.marker([lat,long], {icon: icon_cgm});
+  {% else %}
+  var lat = {{eq.1}}
+  var long = {{eq.0}}
+  // var tipe = {{eq.2}} ini else
+  var shelter = L.marker([lat,long], {icon: icon_ic});
+  {% endif %}
+  var currentShelter = window['shelter'];
+  currentShelter.addTo(shelterMarkers);
+  {% endfor %}
+
+  
+  var baseMaps = {
+    "WorldStreetMap": wsm,
+    "OpenStreetMap": osm,
+    "Google Satelite": googleSat
+  };
+  var overlayMaps = {
+    "Kerapatan CG": imageOverlaycg,
+    "Kerapatan CG (Landonly)": imageOverlay1cg,
+    "Kerapatan": imageOverlay,
+    "Kerapatan (Landonly)": imageOverlay1,
+    "Sambaran": shelterMarkers
+    
+  };
+
+  
+
+  var map = L.map('map', {
+      center: [0.8,127.3],
+      zoom: 10,
+      minZoom: 10,
+      zoomControl: false,
+      layers: [googleSat,imageOverlay1cg]
+  });
+
+  
+  
+		
+  var layerControl = L.control.layers(baseMaps,overlayMaps).addTo(map);
+
+  map.createPane('imagebg');
+  map.getPane('imagebg').style.zIndex = 50000;
+
+  var imageUrl = '{{ url_for('static', filename='mappetir/batas_kota.png') }}';
+  var altText = 'Image ';
+  var latLngBounds = L.latLngBounds([[1.22, 128.1], [0.37, 126.4]]);
+  var bataskota = L.imageOverlay(imageUrl, latLngBounds, {
+    alt: altText,
+    pane: 'imagebg',
+    interactive: true
+    }).addTo(map);
+
+  L.control.zoom({
+  position: 'bottomright'
+  }).addTo(map);
+   
+  /*Legend specific*/
+  var legend = L.control({ position: "bottomleft" });
+  // # f.write('S 0.4i r 0.55i,0.3i green 0.75p 0.85i Rendah (1 - '+inter+')'+ '\n')
+  //   # f.write('G 0.2i '+ '\n')
+  //   # f.write('S 0.4i r 0.55i,0.3i yellow 0.75p 0.85i Sedang ('+rendah+' - '+sedang+')'+ '\n')
+  //   # f.write('G 0.2i '+ '\n')
+  //   # f.write('S 0.4i r 0.55i,0.3i red 0.75p 0.85i Tinggi (\076 '+sedang+')'+ '\n')
+  // # inter = chart[4][0]
+  //   # rendah = chart[4][1]
+  //   # sedang = chart[4][2]
+  legend.onAdd = function(map) {
+    var div = L.DomUtil.create("div", "legend");
+    div.innerHTML += "<h4>Legenda</h4>";
+    div.innerHTML += "<h5>Sambaran per km&sup2;</h5>";
+    div.innerHTML += '<i style="background: #ff0000"></i><span>Tinggi (	&gt; {{z.2}})</span><br>';
+    div.innerHTML += '<i style="background: #FFFF00"></i><span>Sedang ({{z.1}} - {{z.2}})</span><br>';
+    div.innerHTML += '<i style="background: #008000"></i><span>Rendah (1 - {{z.0}})</span><br>';
+    div.innerHTML += '<hr style="border: 1px dashed white;">'
+    div.innerHTML += "<h5>Simbol</h5>";
+    div.innerHTML += '<i class="icon" style="background-image: url({{ url_for('static', filename='images/cgp001_0.png') }});"></i><span>Cloud to Ground +</span><br>';
+    div.innerHTML += '<i class="icon" style="background-image: url({{ url_for('static', filename='images/cgn001_0.png') }});"></i><span>Cloud to Ground -</span><br>';
+    div.innerHTML += '<i class="icon" style="background-image: url({{ url_for('static', filename='images/icf001_0.png') }});"></i><span>Inter Cloud</span><br>';
+    
+    return div;
+  };
+
+  legend.addTo(map);
+
+  L.LogoControl = L.Control.extend({
+      options: {
+          position: 'topleft'
+          //control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
+      },
+
+      onAdd: function (map) {
+          var div = L.DomUtil.create("div", "logo");
+          div.innerHTML += '<img width="40%" src="{{ url_for('static', filename='images/logo-tnt.png') }}">';
+          
+          // L.DomEvent.disableClickPropagation(button);
+          return div;
+      },
+  });
+
+  new L.LogoControl().addTo(map);
+  L.control.scale({ position: "bottomright"}).addTo(map);
+
+
+  // {% for eq in data %}
+  // var lat = {{eq.3}}
+  // var long = {{eq.4}}
+  // {% if eq.5 <= 60 %}
+  // var cgp = L.marker([lat,long], {icon: icon_epic_d3}).addTo(map);
+  // {% elif eq.5 <= 300 %}
+  // var cgm = L.marker([lat,long], {icon: icon_epic_d35}).addTo(map);
+  // {% elif eq.5 > 300 %}
+  // var ic = L.marker([lat,long], {icon: icon_epic_d5}).addTo(map);
+  // {% else %}
+  // L.marker([lat,long], {icon: icon_epic_d5}).addTo(map);
+  // {% endif %}
+  // {% endfor %}
+
+  // domtoimage.toBlob(document.getElementById('map')).then(function(blob) {
+  //     window.saveAs(blob, 'mapleaflet.png');
+  //   });
+
+
+  // map.on("load", () => { /* produce the image */ })
+  // async new Promise(resolve => map.on("load", () => resolve()))
+  // const dataURL = async domtoimage.toPng(mapElement, { width, height })
+  // const blob = async domtoimage.toBlob(mapElement, { width, height })
+  // saveAs(blob, 'map.png')
+  
+  // {% for eq in data %}
+  // var lat = {{eq.3}}
+  // var long = {{eq.4}}
+  // {% if eq.5 <= 60 %}
+  // var cgp = L.marker([lat,long], {icon: icon_epic_d3}).addTo(map);
+  // {% elif eq.5 <= 300 %}
+  // var cgm = L.marker([lat,long], {icon: icon_epic_d35}).addTo(map);
+  // {% elif eq.5 > 300 %}
+  // var ic = L.marker([lat,long], {icon: icon_epic_d5}).addTo(map);
+  // {% else %}
+  // L.marker([lat,long], {icon: icon_epic_d5}).addTo(map);
+  // {% endif %}
+  // {% endfor %}
+
+
+  // L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  //     attribution: '&copy; <a href="https://www.bmkg.go.id">Badan Meteorologi Klimatologi dan Geofisika</a>'
+  // }).addTo(map);
+</script>
+
+{% endblock %}
+
+{% block javascript %} 
+<script>
+  // Sales graph chart
+  var salesGraphChartCanvas = $('#line-chart').get(0).getContext('2d')
+  // $('#revenue-chart').get(0).getContext('2d');
+
+  var salesGraphChartData = {
+    labels: [
+    {% for sum in sumharian %}
+      '{{sum.0}}',
+      {% endfor %}],
+    datasets: [
+      {
+        label: 'Total',
+        fill: false,
+        borderWidth: 1.5,
+        lineTension: 0,
+        spanGaps: true,
+        borderColor: '#efefef',
+        pointRadius: 4,
+        pointHoverRadius: 7,
+        pointColor: '#efefef',
+        pointBackgroundColor: '#efefef',
+        data: [{% for sum in sumharian %}
+              {{sum.4}},
+              {% endfor %}]
+      }
+    ]
+  }
+
+  var salesGraphChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: false,
+          color: '#efefef',
+          drawBorder: false
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          stepSize: 200,
+          fontColor: '#efefef',
+          
+        },
+        gridLines: {
+          display: true,
+          lineWidth: 0.1,
+          color: '#efefef',
+          beginAtZero: false,
+          drawBorder: false
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  // eslint-disable-next-line no-unused-vars
+  var salesGraphChart = new Chart(salesGraphChartCanvas, { // lgtm[js/unused-local-variable]
+    type: 'line',
+    data: salesGraphChartData,
+    options: salesGraphChartOptions
+  })
+  
+</script>
+
+
+
+<script>
+  $(function () {
+  'use strict'
+
+  /* ChartJS
+   * -------
+   * Here we will create a few charts using ChartJS
+   */
+
+  //-----------------------
+  // - MONTHLY SALES CHART -
+  //-----------------------
+
+  // Get context with jQuery - using jQuery's .get() method.
+  var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
+
+  var salesChartData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+      {
+        label: 'Digital Goods',
+        backgroundColor: 'rgba(60,141,188,0.9)',
+        borderColor: 'rgba(60,141,188,0.8)',
+        pointRadius: false,
+        pointColor: '#3b8bba',
+        pointStrokeColor: 'rgba(60,141,188,1)',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: 'rgba(60,141,188,1)',
+        data: [28, 48, 40, 19, 86, 27, 90]
+      },
+      {
+        label: 'Electronics',
+        backgroundColor: 'rgba(210, 214, 222, 1)',
+        borderColor: 'rgba(210, 214, 222, 1)',
+        pointRadius: false,
+        pointColor: 'rgba(210, 214, 222, 1)',
+        pointStrokeColor: '#c1c7d1',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: 'rgba(220,220,220,1)',
+        data: [65, 59, 80, 81, 56, 55, 40]
+      }
+    ]
+  }
+
+  var salesChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        }
+      }],
+      yAxes: [{
+        gridLines: {
+          display: false
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  // eslint-disable-next-line no-unused-vars
+  var salesChart = new Chart(salesChartCanvas, {
+    type: 'line',
+    data: salesChartData,
+    options: salesChartOptions
+  }
+  )
+
+  //---------------------------
+  // - END MONTHLY SALES CHART -
+  //---------------------------
+
+
+  //-------------
+  // - HISTOGRAM CHART -
+  //-------------
+  
+  var ticksStyle = {
+    fontColor: '#FFFFFF',
+    fontStyle: 'bold'
+  }
+
+  var mode = 'index'
+  var intersect = true
+
+  var $visitorsChart = $('#visitors-chart')
+  // eslint-disable-next-line no-unused-vars
+  var visitorsChart = new Chart($visitorsChart, {
+    data: {
+      labels: ['18th', '20th', '22nd', '24th', '26th', '28th', '30th'],
+      datasets: [{
+        type: 'line',
+        data: [7, 2, 2, 3, 5, 3, 1],
+        backgroundColor: 'solid',
+        borderColor: '#007bff',
+        pointBorderColor: '#007bff',
+        pointBackgroundColor: '#007bff',
+        fill: false
+        // pointHoverBackgroundColor: '#007bff',
+        // pointHoverBorderColor    : '#007bff'
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          // display: true,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: ticksStyle
+        }]
+      }
+    }
+  })
+  var $salesChart1 = $('#sales-chart1')
+  var $salesChart = $('#sales-chart')
+  // eslint-disable-next-line no-unused-vars
+  
+  var salesChart = new Chart($salesChart1, {
+    type: 'horizontalBar',
+    data: {
+      labels: ['TERNATE SELATAN', 'TERNATE TENGAH', 'TERNATE UTARA', 'PULAU TERNATE',
+             'TIDORE', 'TIDORE SELATAN', 'TIDORE UTARA','TIDORE TIMUR','OBA UTARA',
+            'JAILOLO SELATAN','JAILOLO'],
+      datasets: [
+        {// CG+
+          label: 'CG+',
+          backgroundColor: '#f56954',
+          borderColor: '#f56954',
+          // data: {{wilayah}}
+          
+          data: [
+                {% for sum in sumwil %}
+                {{sum.1}},
+                {% endfor %}]
+        },
+        {// CG-
+          label: 'CG-',
+          backgroundColor: '#f39c12',
+          borderColor: '#f39c12',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumwil %}
+                {{sum.2}},
+                {% endfor %}]
+        },
+        {// IC
+          label: 'IC',
+          backgroundColor: '#00a65a',
+          borderColor: '#00a65a',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumwil %}
+                {{sum.3}},
+                {% endfor %}]
+        }
+      ]
+    },
+    options: {
+      animation: {
+        onComplete: function () {
+            var chartInstance = this.chart,
+                ctx = chartInstance.ctx;
+                ctx.textAlign = 'left';
+                ctx.fillStyle = "rgba(255,255,255, 1)";
+                ctx.textBaseline = 'top';
+
+                // Loop through each data in the datasets
+
+                // this.data.datasets.forEach(function (dataset, i) {
+                //     var meta = chartInstance.controller.getDatasetMeta(i);
+                //     meta.data.forEach(function (bar, index) {
+                //         var data = dataset.data[index];
+                //         ctx.fillText(data, bar._model.x+5, bar._model.y - 5);
+
+                //     });
+                // });
+            }
+      },
+      categoryPercentage: 1.0, // here 
+      barPercentage: 0.98,  // here
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: true
+      },
+      scales: {
+        yAxes: [{
+          // display: false,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+
+            
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          afterDataLimits(scale) {
+          scale.max += 1
+          },
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+          }, ticksStyle,
+          
+          )
+        }]
+      }
+      
+    }
+  })
+
+  var salesChart = new Chart($salesChart, {
+    type: 'bar',
+    data: {
+      
+      labels: [
+      {% for sum in sumharian %}
+      '{{sum.0}}',
+      {% endfor %}],
+      
+      datasets: [
+        {// CG+
+          label: 'CG+',
+          backgroundColor: '#f56954',
+          borderColor: '#f56954',
+          // data: {{wilayah}}
+          
+          data: [
+                {% for sum in sumharian %}
+                {{sum.1}},
+                {% endfor %}]
+        },
+        {// CG-
+          label: 'CG-',
+          backgroundColor: '#f39c12',
+          borderColor: '#f39c12',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumharian %}
+                {{sum.2}},
+                {% endfor %}]
+        },
+        {// IC
+          label: 'IC',
+          backgroundColor: '#00a65a',
+          borderColor: '#00a65a',
+          // data: {{wilayah}}
+          data: [
+                {% for sum in sumharian %}
+                {{sum.3}},
+                {% endfor %}]
+        }
+      ]
+    },
+    options: {
+      animation: {
+        onComplete: function () {
+            var chartInstance = this.chart,
+                ctx = chartInstance.ctx;
+                ctx.textAlign = 'center';
+                ctx.fillStyle = "rgba(255,255,255, 1)";
+                ctx.textBaseline = 'bottom';
+
+                // Loop through each data in the datasets
+
+                
+            }
+        },
+      
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: true
+      },
+      scales: {
+        
+        yAxes: [{
+          // display: false,
+          afterDataLimits(scale) {
+          scale.max += 1
+          },
+          display: true,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false,
+          },
+          ticks: $.extend({
+            beginAtZero: true
+          }, ticksStyle)
+        }]
+      }
+    }
+  })
+
+
+
+
+
+  //-------------
+  // - PIE CHART -
+  //-------------
+  // Get context with jQuery - using jQuery's .get() method.
+  var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+  var pieData = {
+    labels: [
+      '< 60 Km',
+      '60 - 300 Km',
+      '> 300 Km'
+    ],
+    datasets: [
+      {
+        data: [0,0,0],
+        backgroundColor: ['#f56954', '#f39c12','#00a65a']
+      }
+    ]
+  }
+  var pieOptions = {
+    legend: {
+      display: false
+    }
+  }
+  // Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  // eslint-disable-next-line no-unused-vars
+  var pieChart = new Chart(pieChartCanvas, {
+    type: 'doughnut',
+    data: pieData,
+    options: pieOptions
+  })
+
+  //-----------------
+  // - END PIE CHART -
+  //-----------------
+
+  //-------------
+  // - PIE CHART -
+  //-------------
+  // Get context with jQuery - using jQuery's .get() method.
+  var pieChartCanvas = $('#pieChart1').get(0).getContext('2d')
+  var pieData = {
+    labels: [
+      'Cloud to Ground +',
+      'Cloud to Ground -',
+      'Inter Cloud'
+    ],
+    datasets: [
+      {
+        // data: {{mag}},
+        data: [{{total.1}},{{total.2}},{{total.3}}],
+        backgroundColor: ['#f56954','#f39c12','#00a65a']
+      }
+    ]
+  }
+  var pieOptions = {
+    legend: {
+      display: false
+    }
+  }
+  // Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  // eslint-disable-next-line no-unused-vars
+  var pieChart = new Chart(pieChartCanvas, {
+    type: 'doughnut',
+    data: pieData,
+    options: pieOptions
+  })
+
+  //-----------------
+  // - END PIE CHART -
+  //-----------------
+  
+  })
+</script>
+{% endblock %}
+
