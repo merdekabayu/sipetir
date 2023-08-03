@@ -39,11 +39,10 @@ def pelayanan_sortir(custloc,tgl1,tgl2,dtime1,dtime2,utc,batas,rad,filedb):
     else:
         databases = []
         for files in filedb:
-            if files.getbuffer().nbytes > 0:
-                fname = secure_filename(files.filename)
-                print(files)
-                files.save(app.config['UPLOAD_FOLDER'] + fname)
-                databases.append(app.config['UPLOAD_FOLDER'] + fname)
+            fname = secure_filename(files.filename)
+            print(files)
+            files.save(app.config['UPLOAD_FOLDER'] + fname)
+            databases.append(app.config['UPLOAD_FOLDER'] + fname)
 
             
     print(databases)
