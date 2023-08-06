@@ -200,7 +200,7 @@ def customig():
 
 @app.route('/pelayanan-petir')
 def pelayananpetir():
-    if 'user' in session:
+    if 'user' in session or 'user_dataproc' in session:
         
         
         cust = [0.777, 127.3667]
