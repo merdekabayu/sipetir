@@ -155,16 +155,24 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="{{ url_for('pelayananpetir') }}" class="nav-link {% block mainnav_pelayanan %} {% endblock %}">
-              <i class="nav-icon fas fa-headset"></i>
-              
+          <li class="nav-item {% block menuopen_ig %} {% endblock %}">
+            <a href="#" class="nav-link {% block mainnav_ig %} {% endblock %}">
+              <i class="nav-icon fas fa-database"></i>
               <p>
-                Pelayanan Data Petir
+                Database
+                <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ url_for('pelayananpetir') }}" class="nav-link {% block nav_igmingguan %} {% endblock %}">
+                  <i class="far fa-image nav-icon"></i>
+                  <p>Sortir Data Petir</p>
+                </a>
+              </li>
+            </ul>
           </li>
+          
           <li class="nav-item">
             <a href="{{ url_for('data_proc') }}" class="nav-link {% block mainnav_dataproc %} {% endblock %}">
               <i class="nav-icon fas fa-tools"></i><i class="fa-regular fa-user-headset" style="color: #ffffff;"></i>
